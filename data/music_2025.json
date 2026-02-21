@@ -1,0 +1,120 @@
+[
+  {
+    "month": "2025-01",
+    "month_label": "1월",
+    "songs": [
+      {"rank": 1, "title": "음악만세", "artist": "단편선 순간들", "plays": 22},
+      {"rank": 2, "title": "Girls Girls", "artist": "Wonder Girls", "plays": 19},
+      {"rank": 3, "title": "바이닐스토어", "artist": "Chan", "plays": 18},
+      {"rank": 4, "title": "Margaret (feat. Bleachers)", "artist": "Lana Del Rey", "plays": 17}
+    ]
+  },
+  {
+    "month": "2025-02",
+    "month_label": "2월",
+    "songs": [
+      {"rank": 1, "title": "미행 (그림자: Shadow)", "artist": "Unknown", "plays": 26},
+      {"rank": 2, "title": "LOVE ATTACK", "artist": "F(x)", "plays": 26},
+      {"rank": 3, "title": "Georgy Porgy", "artist": "Toto", "plays": 22},
+      {"rank": 4, "title": "for him. (feat. Allday)", "artist": "Troye Sivan", "plays": 22}
+    ]
+  },
+  {
+    "month": "2025-03",
+    "month_label": "3월",
+    "songs": [
+      {"rank": 1, "title": "QECNOVY F197", "artist": "Unknown", "plays": 42},
+      {"rank": 2, "title": "제트별", "artist": "이키모노가카리", "plays": 32},
+      {"rank": 3, "title": "Day By Day", "artist": "F(x)", "plays": 31},
+      {"rank": 4, "title": "0308", "artist": "보수동쿨러", "plays": 30}
+    ]
+  },
+  {
+    "month": "2025-04",
+    "month_label": "4월",
+    "songs": [
+      {"rank": 1, "title": "Takaneno Hanakosan", "artist": "백 넘버", "plays": 29},
+      {"rank": 2, "title": "너와 나의", "artist": "Fromm", "plays": 29},
+      {"rank": 3, "title": "SIGN", "artist": "이즈나", "plays": 28},
+      {"rank": 4, "title": "사랑 놀이", "artist": "Unknown", "plays": 25}
+    ]
+  },
+  {
+    "month": "2025-05",
+    "month_label": "5월",
+    "songs": [
+      {"rank": 1, "title": "Chemtrails Over the Country Club", "artist": "Lana Del Rey", "plays": 30},
+      {"rank": 2, "title": "허물", "artist": "토이", "plays": 29},
+      {"rank": 3, "title": "우리", "artist": "SHINee", "plays": 26},
+      {"rank": 4, "title": "Ribs", "artist": "Lorde", "plays": 26}
+    ]
+  },
+  {
+    "month": "2025-06",
+    "month_label": "6월",
+    "songs": [
+      {"rank": 1, "title": "FWB", "artist": "도쿄지헌", "plays": 43},
+      {"rank": 2, "title": "Gunjou Biyori", "artist": "Part Time Musicians", "plays": 43},
+      {"rank": 3, "title": "The Only One", "artist": "Hump Back", "plays": 29},
+      {"rank": 4, "title": "Haikei Shounenyo", "artist": "beabadoobee", "plays": 28}
+    ]
+  },
+  {
+    "month": "2025-07",
+    "month_label": "7월",
+    "songs": [
+      {"rank": 1, "title": "비비드라라러브", "artist": "데이식스", "plays": 27},
+      {"rank": 2, "title": "Andrew", "artist": "Unknown", "plays": 26},
+      {"rank": 3, "title": "녹아내려요", "artist": "Unknown", "plays": 26},
+      {"rank": 4, "title": "영", "artist": "Unknown", "plays": 25}
+    ]
+  },
+  {
+    "month": "2025-08",
+    "month_label": "8월",
+    "songs": [
+      {"rank": 1, "title": "0+0", "artist": "Unknown", "plays": 34},
+      {"rank": 2, "title": "갈림길", "artist": "Unknown", "plays": 29},
+      {"rank": 3, "title": "_에게", "artist": "Unknown", "plays": 22},
+      {"rank": 4, "title": "Hot Summer", "artist": "Unknown", "plays": 18}
+    ]
+  },
+  {
+    "month": "2025-09",
+    "month_label": "9월",
+    "songs": [
+      {"rank": 1, "title": "사랑이었다 (feat. 루나)", "artist": "ZICO", "plays": 3},
+      {"rank": 2, "title": "바이, 썸머", "artist": "아이유", "plays": 3},
+      {"rank": 3, "title": "영원히", "artist": "성시경", "plays": 2}
+    ]
+  },
+  {
+    "month": "2025-10",
+    "month_label": "10월",
+    "songs": [
+      {"rank": 1, "title": "Blue Valentine", "artist": "NMIXX", "plays": 22},
+      {"rank": 2, "title": "사랑하게 될 거야", "artist": "Unknown", "plays": 18},
+      {"rank": 3, "title": "동행", "artist": "김동률", "plays": 14}
+    ]
+  },
+  {
+    "month": "2025-11",
+    "month_label": "11월",
+    "songs": [
+      {"rank": 1, "title": "아테나", "artist": "Green Day", "plays": 20},
+      {"rank": 2, "title": "미친 건가 (Re-Make)", "artist": "화사", "plays": 19},
+      {"rank": 3, "title": "21 Guns", "artist": "백예린", "plays": 18},
+      {"rank": 4, "title": "Good Goodbye", "artist": "Unknown", "plays": 18}
+    ]
+  },
+  {
+    "month": "2025-12",
+    "month_label": "12월",
+    "songs": [
+      {"rank": 1, "title": "Heroine", "artist": "백 넘버", "plays": 33},
+      {"rank": 2, "title": "Clean & Dirty", "artist": "빈지노", "plays": 25},
+      {"rank": 3, "title": "7H 아니야", "artist": "HARVARD", "plays": 19},
+      {"rank": 4, "title": "Sandman", "artist": "ZICO, 빈지노", "plays": 19}
+    ]
+  }
+]

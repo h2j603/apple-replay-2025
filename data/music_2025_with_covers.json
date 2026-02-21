@@ -1,0 +1,431 @@
+[
+  {
+    "month": "2025-01",
+    "month_label": "1월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "음악만세",
+        "artist": "단편선 순간들",
+        "plays": 22,
+        "cover_url": "covers/2025-01_음악만세.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/95/a6/71/95a6713a-2705-e548-7605-f9c7a43c9c99/8800280831774.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "Girls Girls",
+        "artist": "Wonder Girls",
+        "plays": 19,
+        "cover_url": "covers/2025-01_Girls Girls.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/9c/f6/bb/9cf6bb20-1217-299b-795f-dab1a344b450/8804775027727_Cover.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "바이닐스토어",
+        "artist": "Chan",
+        "plays": 18,
+        "cover_url": "covers/2025-01_바이닐스토어.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6c/4b/5f/6c4b5fa1-1249-e59e-e821-97f956630d2e/190296495830.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "Margaret (feat. Bleachers)",
+        "artist": "Lana Del Rey",
+        "plays": 17,
+        "cover_url": "covers/2025-01_Margaret feat Bleachers.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/7c/c4/e5/7cc4e501-6b09-b379-bb54-a40de4615aa3/22UM1IM33313.rgb.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-02",
+    "month_label": "2월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "미행 (그림자: Shadow)",
+        "artist": "Unknown",
+        "plays": 26,
+        "cover_url": "covers/2025-02_미행 그림자 Shadow.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/90/05/84/9005841d-8b2a-a266-af60-309f31ba40d8/f_x_02_web.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "LOVE ATTACK",
+        "artist": "F(x)",
+        "plays": 26,
+        "cover_url": "covers/2025-02_LOVE ATTACK.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/69/c9/9c/69c99c3c-acf9-b1e7-5a9c-08b34a1002ee/cover.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "Georgy Porgy",
+        "artist": "Toto",
+        "plays": 22,
+        "cover_url": "covers/2025-02_Georgy Porgy.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a1/a9/ea/a1a9eaef-2d81-c2c6-9a03-82c3cbc9e598/074643531726.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "for him. (feat. Allday)",
+        "artist": "Troye Sivan",
+        "plays": 22,
+        "cover_url": "covers/2025-02_for him feat Allday.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/39/c8/ce/39c8ce3f-37b1-c6a9-8109-c85867b1e6cf/16UMGIM53730.rgb.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-03",
+    "month_label": "3월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "QECNOVY F197",
+        "artist": "Unknown",
+        "plays": 42,
+        "cover_url": null
+      },
+      {
+        "rank": 2,
+        "title": "제트별",
+        "artist": "이키모노가카리",
+        "plays": 32,
+        "cover_url": null
+      },
+      {
+        "rank": 3,
+        "title": "Day By Day",
+        "artist": "F(x)",
+        "plays": 31,
+        "cover_url": "covers/2025-03_Day By Day.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/52/86/32/52863260-b729-ee59-7fe6-d38d64412361/199350462535.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "0308",
+        "artist": "보수동쿨러",
+        "plays": 30,
+        "cover_url": "covers/2025-03_0308.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/2e/1a/af/2e1aaf8a-b681-9d33-87b4-755ffee428d0/yeah_I_don_t_want_it_cover.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-04",
+    "month_label": "4월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "Takaneno Hanakosan",
+        "artist": "백 넘버",
+        "plays": 29,
+        "cover_url": "covers/2025-04_Takaneno Hanakosan.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/ad/35/1f/ad351f01-3b1e-e723-77db-3a7d88221e5e/00602577303753.rgb.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "너와 나의",
+        "artist": "Fromm",
+        "plays": 29,
+        "cover_url": "covers/2025-04_너와 나의.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/11/8f/f5/118ff508-272d-11dc-8ddf-7dcfc6ad8436/8809390302679.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "SIGN",
+        "artist": "이즈나",
+        "plays": 28,
+        "cover_url": "covers/2025-04_SIGN.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/9d/a4/5b/9da45b57-dd82-96ef-e34e-7a85c5b1f8c1/198704433269_Cover.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "사랑 놀이",
+        "artist": "Unknown",
+        "plays": 25,
+        "cover_url": null
+      }
+    ]
+  },
+  {
+    "month": "2025-05",
+    "month_label": "5월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "Chemtrails Over the Country Club",
+        "artist": "Lana Del Rey",
+        "plays": 30,
+        "cover_url": "covers/2025-05_Chemtrails Over the Country Cl.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/74/79/c5/7479c518-a8ba-2054-b978-c87293194260/20UM1IM09851.rgb.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "허물",
+        "artist": "토이",
+        "plays": 29,
+        "cover_url": null
+      },
+      {
+        "rank": 3,
+        "title": "우리",
+        "artist": "SHINee",
+        "plays": 26,
+        "cover_url": "covers/2025-05_우리.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/2a/fd/d3/2afdd3a5-d6bd-4a95-87dc-dab7d8aedb1c/asset.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "Ribs",
+        "artist": "Lorde",
+        "plays": 26,
+        "cover_url": "covers/2025-05_Ribs.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/96/a5/09/96a50916-169b-724c-b722-b8c474406352/13UAAIM68691.rgb.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-06",
+    "month_label": "6월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "FWB",
+        "artist": "도쿄지헌",
+        "plays": 43,
+        "cover_url": null
+      },
+      {
+        "rank": 2,
+        "title": "Gunjou Biyori",
+        "artist": "Part Time Musicians",
+        "plays": 43,
+        "cover_url": null
+      },
+      {
+        "rank": 3,
+        "title": "The Only One",
+        "artist": "Hump Back",
+        "plays": 29,
+        "cover_url": "covers/2025-06_The Only One.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/38/78/f1/3878f1b4-8ca4-8775-273e-4853b226344c/677517010251_CAKToroYMoiWhatFor.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "Haikei Shounenyo",
+        "artist": "beabadoobee",
+        "plays": 28,
+        "cover_url": null
+      }
+    ]
+  },
+  {
+    "month": "2025-07",
+    "month_label": "7월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "비비드라라러브",
+        "artist": "데이식스",
+        "plays": 27,
+        "cover_url": null
+      },
+      {
+        "rank": 2,
+        "title": "Andrew",
+        "artist": "Unknown",
+        "plays": 26,
+        "cover_url": "covers/2025-07_Andrew.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/02/4f/be/024fbe59-7bf9-098b-9a75-8a801e5edb0a/196871101493.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "녹아내려요",
+        "artist": "Unknown",
+        "plays": 26,
+        "cover_url": "covers/2025-07_녹아내려요.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/fd/d8/f5/fdd8f5b8-5723-3d20-2b6f-6653046e4f05/8809928952529_Cover.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "영",
+        "artist": "Unknown",
+        "plays": 25,
+        "cover_url": "covers/2025-07_영.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/ad/2b/57/ad2b57c5-78cf-741f-3f60-b61ecfcd5d00/s07.myunuhwl.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-08",
+    "month_label": "8월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "0+0",
+        "artist": "Unknown",
+        "plays": 34,
+        "cover_url": "covers/2025-08_00.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/2b/d8/ff/2bd8ff78-9201-71dc-c931-503340d8b08a/00601501407529.rgb.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "갈림길",
+        "artist": "Unknown",
+        "plays": 29,
+        "cover_url": null
+      },
+      {
+        "rank": 3,
+        "title": "_에게",
+        "artist": "Unknown",
+        "plays": 22,
+        "cover_url": "covers/2025-08__에게.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/97/76/13/977613ad-5cef-e6f6-9662-5b334a75dd37/191953223841.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "Hot Summer",
+        "artist": "Unknown",
+        "plays": 18,
+        "cover_url": "covers/2025-08_Hot Summer.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music3/v4/84/4a/0c/844a0cbc-2380-5b8d-17ea-d7a38ebe7599/730957756582.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-09",
+    "month_label": "9월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "사랑이었다 (feat. 루나)",
+        "artist": "ZICO",
+        "plays": 3,
+        "cover_url": "covers/2025-09_사랑이었다 feat 루나.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/db/af/a6/dbafa664-5092-dc01-cef2-88976198be7f/cover_KM0020984_1.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "바이, 썸머",
+        "artist": "아이유",
+        "plays": 3,
+        "cover_url": "covers/2025-09_바이 썸머.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/df/13/50/df13503f-a204-84f0-8cd7-889e365bfac7/cover_KM0023404_1.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "영원히",
+        "artist": "성시경",
+        "plays": 2,
+        "cover_url": "covers/2025-09_영원히.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/28/f7/cb/28f7cbb1-2d3b-c972-c910-ebdd0aed53a0/cover-_DS.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-10",
+    "month_label": "10월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "Blue Valentine",
+        "artist": "NMIXX",
+        "plays": 22,
+        "cover_url": "covers/2025-10_Blue Valentine.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a7/5d/54/a75d54db-b997-d410-b6dd-25f7e766392a/8809928955148_Cover.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "사랑하게 될 거야",
+        "artist": "Unknown",
+        "plays": 18,
+        "cover_url": "covers/2025-10_사랑하게 될 거야.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f1/6a/03/f16a0315-e728-e95f-8217-089aaa73c80c/8809933237031.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "동행",
+        "artist": "김동률",
+        "plays": 14,
+        "cover_url": "covers/2025-10_동행.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music5/v4/69/ac/7c/69ac7c7e-a43e-3d58-9a8d-7f70e75debff/KM0002958-_-1001.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-11",
+    "month_label": "11월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "아테나",
+        "artist": "Green Day",
+        "plays": 20,
+        "cover_url": null
+      },
+      {
+        "rank": 2,
+        "title": "미친 건가 (Re-Make)",
+        "artist": "화사",
+        "plays": 19,
+        "cover_url": null
+      },
+      {
+        "rank": 3,
+        "title": "21 Guns",
+        "artist": "백예린",
+        "plays": 18,
+        "cover_url": "covers/2025-11_21 Guns.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/fc/08/a0/fc08a00d-01b7-fd32-7ed1-70d8a5704b45/8800340039638_cover.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "Good Goodbye",
+        "artist": "Unknown",
+        "plays": 18,
+        "cover_url": "covers/2025-11_Good Goodbye.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/00/33/1e/00331ef2-b690-44bc-4394-a52c72e91856/18669.jpg/600x600bb.jpg"
+      }
+    ]
+  },
+  {
+    "month": "2025-12",
+    "month_label": "12월",
+    "songs": [
+      {
+        "rank": 1,
+        "title": "Heroine",
+        "artist": "백 넘버",
+        "plays": 33,
+        "cover_url": "covers/2025-12_Heroine.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/5d/d1/f0/5dd1f0aa-4b50-e6b1-73b1-fb740989afba/00602577303906.rgb.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 2,
+        "title": "Clean & Dirty",
+        "artist": "빈지노",
+        "plays": 25,
+        "cover_url": "covers/2025-12_Clean  Dirty.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music111/v4/51/a0/ff/51a0ffc1-e683-6517-015d-73415da75b28/dj.yghonlgs.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 3,
+        "title": "7H 아니야",
+        "artist": "HARVARD",
+        "plays": 19,
+        "cover_url": "covers/2025-12_7H 아니야.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/1c/70/3d/1c703d66-943f-dd77-cb4b-23745685bb7c/8800280856166.jpg/600x600bb.jpg"
+      },
+      {
+        "rank": 4,
+        "title": "Sandman",
+        "artist": "ZICO, 빈지노",
+        "plays": 19,
+        "cover_url": "covers/2025-12_Sandman.jpg",
+        "cover_source": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/58/53/11/585311b1-e98d-05f4-07a4-15db7914857a/dj.alyhvtwi.jpg/600x600bb.jpg"
+      }
+    ]
+  }
+]
