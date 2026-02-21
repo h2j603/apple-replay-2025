@@ -5,164 +5,453 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apple Music Replay 2025</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&family=Noto+Serif+KR:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.min.js"></script>
   <style>
-    * {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
+    :root {
+      --radio-bg: #fc4f05;
+      --radio-warm: #e03d00;
+      --radio-dark: #c23200;
+      --mono-gray: #babab8;
+      --text-light: rgba(255,255,255,0.9);
+      --text-dim: rgba(255,255,255,0.5);
+    }
+
     html, body {
-      background: #0a0a0a;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
+      background: #0a0a0a;
       font-family: 'Noto Sans KR', sans-serif;
     }
-    
-    #canvas-container {
+
+    /* ── SPLIT LAYOUT ─────────────────────────────────── */
+    #app {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      flex-direction: row;
+      width: 100vw;
+      height: 100vh;
     }
-    
-    canvas {
+
+    /* LEFT: MAP PANEL */
+    #map-panel {
+      position: relative;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      background: #0a0a0a;
+      flex-shrink: 0;
+    }
+
+    #map-panel canvas {
       display: block;
     }
-    
-    .header {
-      position: fixed;
-      top: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      z-index: 100;
+
+    .map-header {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      z-index: 10;
       pointer-events: none;
     }
-    
-    .header h1 {
+
+    .map-header h1 {
       font-family: 'Noto Serif KR', serif;
-      font-size: 2.5rem;
-      color: #fff;
+      font-size: 1.6rem;
+      color: rgba(255,255,255,0.85);
       letter-spacing: -0.02em;
-      opacity: 0.9;
+      line-height: 1.1;
     }
-    
-    .header p {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.5);
-      margin-top: 8px;
+
+    .map-header p {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 5px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .map-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: 0.08em;
+    }
+
+    /* Divider */
+    #divider {
+      width: 1px;
+      height: 100%;
+      background: rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+
+    /* RIGHT: RADIO PANEL */
+    #radio-panel {
+      position: relative;
+      width: 50%;
+      height: 100%;
+      background: var(--radio-bg);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Radio noise texture overlay */
+    #radio-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Radio background placeholder (replace src with actual radio image) */
+    #radio-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.12;
+      mix-blend-mode: luminosity;
+      z-index: 0;
+      display: none; /* shown when image is set */
+    }
+
+    /* Radio idle state */
+    #radio-idle {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: opacity 0.4s ease;
+    }
+
+    #radio-idle.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-logo {
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .radio-logo::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+    }
+
+    .radio-logo svg {
+      opacity: 0.4;
+    }
+
+    .radio-idle-text {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* Radio active state — shown on hover */
+    #radio-active {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    #radio-active.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .radio-album-wrap {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    #radio-album-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 4px;
+      object-fit: cover;
+      display: block;
+      /* grayscale + tint to #babab8 */
+      filter: grayscale(100%) brightness(0.85) sepia(10%);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      transition: all 0.4s cubic-bezier(.23,1,.32,1);
+    }
+
+    /* Colored overlay tint to approximate #babab8 */
+    .radio-album-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      background: rgba(186,186,184,0.18);
+      mix-blend-mode: color;
+      pointer-events: none;
+    }
+
+    /* Month badge */
+    .radio-month-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: rgba(0,0,0,0.6);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .radio-info {
+      text-align: center;
+      width: 100%;
+    }
+
+    #radio-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.25;
+      margin-bottom: 8px;
+      word-break: keep-all;
+    }
+
+    #radio-artist {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 16px;
       font-weight: 300;
     }
-    
-    .tooltip {
-      position: fixed;
-      background: rgba(20, 20, 20, 0.95);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 16px 20px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
+
+    .radio-plays {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
     }
-    
-    .tooltip.visible {
-      opacity: 1;
+
+    .radio-plays-dot {
+      width: 5px;
+      height: 5px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
     }
-    
-    .tooltip .month {
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    #radio-plays-count {
+      font-family: 'DM Mono', monospace;
       font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.05em;
     }
-    
-    .tooltip .title {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 1.1rem;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    
-    .tooltip .artist {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 10px;
-    }
-    
-    .tooltip .plays {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.4);
-    }
-    
-    .controls {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
+
+    #radio-yt-btn {
       display: flex;
-      gap: 12px;
-      z-index: 100;
-    }
-    
-    .controls button {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.8);
-      padding: 10px 20px;
-      border-radius: 24px;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.9);
+      padding: 11px 24px;
+      border-radius: 30px;
       font-family: 'Noto Sans KR', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
+      text-decoration: none;
       transition: all 0.2s ease;
+      letter-spacing: 0.05em;
     }
-    
-    .controls button:hover {
-      background: rgba(255,255,255,0.15);
-      border-color: rgba(255,255,255,0.3);
-    }
-    
-    .controls button.active {
-      background: rgba(255,255,255,0.2);
+
+    #radio-yt-btn:hover {
+      background: rgba(0,0,0,0.45);
       border-color: rgba(255,255,255,0.4);
+      transform: translateY(-1px);
     }
-    
-    .hint {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.75rem;
+
+    #radio-yt-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* Decorative scan lines on radio panel */
+    .radio-scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Radio panel label */
+    .radio-label {
+      position: absolute;
+      top: 28px;
+      right: 28px;
+      font-size: 0.62rem;
       color: rgba(255,255,255,0.3);
-      text-align: center;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+      z-index: 10;
+    }
+
+    /* ── MOBILE ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      #app {
+        flex-direction: column;
+      }
+
+      #map-panel {
+        width: 100%;
+        height: 50%;
+      }
+
+      #divider {
+        width: 100%;
+        height: 1px;
+      }
+
+      #radio-panel {
+        width: 100%;
+        height: 50%;
+      }
+
+      #radio-album-img {
+        width: 120px;
+        height: 120px;
+      }
+
+      #radio-title {
+        font-size: 1rem;
+      }
+
+      .radio-album-wrap {
+        margin-bottom: 16px;
+      }
+
+      #radio-active {
+        padding: 20px;
+      }
+
+      .map-header h1 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>2025</h1>
-    <p>가장 많이 들은 노래</p>
-  </div>
-  
-  <div id="canvas-container"></div>
-  
-  <div class="tooltip" id="tooltip">
-    <div class="month"></div>
-    <div class="title"></div>
-    <div class="artist"></div>
-    <div class="plays"></div>
-  </div>
-  
-  <div class="hint">마우스를 올려 상세 정보 확인 · 클릭 시 YouTube로 이동</div>
-  
-  <div class="controls">
-    <button id="btn-grid" class="active">그리드</button>
-    <button id="btn-spiral">나선형</button>
-    <button id="btn-timeline">타임라인</button>
+  <div id="app">
+    <!-- LEFT: MAP -->
+    <div id="map-panel">
+      <div class="map-header">
+        <h1>2025</h1>
+        <p>Music Map</p>
+      </div>
+      <!-- p5.js canvas goes here -->
+    </div>
+
+    <div id="divider"></div>
+
+    <!-- RIGHT: RADIO -->
+    <div id="radio-panel">
+      <div class="radio-scanlines"></div>
+
+      <!-- Radio background image (set src when ready) -->
+      <img id="radio-bg-img" src="" alt="" />
+
+      <div class="radio-label">Radio / 라디오</div>
+
+      <!-- Idle state -->
+      <div id="radio-idle">
+        <div class="radio-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <div class="radio-idle-text">앨범에 마우스를 올려보세요</div>
+      </div>
+
+      <!-- Active state (on hover) -->
+      <div id="radio-active">
+        <div class="radio-album-wrap">
+          <img id="radio-album-img" src="" alt="" crossorigin="anonymous" />
+          <div class="radio-month-badge" id="radio-month">1월</div>
+        </div>
+        <div class="radio-info">
+          <div id="radio-title">곡 제목</div>
+          <div id="radio-artist">아티스트</div>
+          <div class="radio-plays">
+            <div class="radio-plays-dot"></div>
+            <span id="radio-plays-count">— 회 재생</span>
+          </div>
+          <a id="radio-yt-btn" href="#" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/>
+            </svg>
+            YouTube에서 듣기
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
