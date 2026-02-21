@@ -64,7 +64,8 @@ function createBubbles() {
         color: color,
         monthIdx: mi,
         songIdx: si,
-        idx: idx
+        idx: idx,
+        youtube_url: song.youtube_url || ''
       });
       idx++;
     });
@@ -231,8 +232,21 @@ function updateTooltip() {
     tooltip.querySelector('.title').textContent = hoveredBubble.title;
     tooltip.querySelector('.artist').textContent = hoveredBubble.artist || 'Unknown';
     tooltip.querySelector('.plays').textContent = `${hoveredBubble.plays}회 재생`;
+    
+    if (hoveredBubble.youtube_url) {
+      document.body.style.cursor = 'pointer';
+    } else {
+      document.body.style.cursor = 'default';
+    }
   } else {
     tooltip.classList.remove('visible');
+    document.body.style.cursor = 'default';
+  }
+}
+
+function mousePressed() {
+  if (hoveredBubble && hoveredBubble.youtube_url) {
+    window.open(hoveredBubble.youtube_url, '_blank');
   }
 }
 
