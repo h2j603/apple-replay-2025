@@ -9,7 +9,7 @@ const MAX_RADIUS = 80;
 const MAX_PLAYS = 43;
 
 function preload() {
-  loadJSON('data/music_2025_with_covers.json', (loadedData) => {
+  loadJSON('data/music_2025.json', (loadedData) => {
     data = loadedData;
     loadImages();
   });
