@@ -13,8 +13,8 @@
     "month": "2025-02",
     "month_label": "2월",
     "songs": [
-      {"rank": 1, "title": "미행 (그림자: Shadow)", "artist": "Unknown", "plays": 26},
-      {"rank": 2, "title": "LOVE ATTACK", "artist": "F(x)", "plays": 26},
+      {"rank": 1, "title": "미행 (그림자: Shadow)", "artist": "F(x)", "plays": 26},
+      {"rank": 2, "title": "LOVE ATTACK", "artist": "리센느", "plays": 26},
       {"rank": 3, "title": "Georgy Porgy", "artist": "Toto", "plays": 22},
       {"rank": 4, "title": "for him. (feat. Allday)", "artist": "Troye Sivan", "plays": 22}
     ]
