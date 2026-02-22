@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -87,6 +88,14 @@
       gap: 0;
     }
 
+    /* Three.js container for LP player */
+    #three-lp-container {
+      position: relative;
+      z-index: 1;
+      width: 320px;
+      height: 320px;
+    }
+
     /* Warm vignette */
     #lp-panel::after {
       content: '';
@@ -96,199 +105,32 @@
       z-index: 0;
     }
 
-    /* Wood plinth */
-    .plinth {
-      position: relative;
-      z-index: 1;
-      background:
-        linear-gradient(170deg, #2a1f0e 0%, #1a1208 40%, #221908 70%, #2e2210 100%);
-      border-radius: 18px;
-      padding: 28px 32px 24px;
-      box-shadow:
-        0 2px 0 rgba(255,210,100,0.06) inset,
-        0 -1px 0 rgba(0,0,0,0.8) inset,
-        0 30px 80px rgba(0,0,0,0.7),
-        0 2px 4px rgba(255,190,60,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-      /* wood grain lines */
-      background-image:
-        repeating-linear-gradient(
-          92deg,
-          transparent,
-          transparent 18px,
-          rgba(0,0,0,0.04) 18px,
-          rgba(0,0,0,0.04) 19px
-        ),
-        linear-gradient(170deg, #2a1f0e 0%, #1a1208 40%, #221908 70%, #2e2210 100%);
-    }
-
-    /* ── TURNTABLE AREA ──────────────────────────────── */
-    .turntable {
-      position: relative;
-      width: 260px; height: 260px;
-    }
-
-    /* Platter (metal ring) */
-    .platter {
-      position: absolute; inset: 0;
+    /* LED indicator */
+    .lp-led {
+      position: absolute;
+      top: 20px; left: 24px;
+      width: 7px; height: 7px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #3a3a38, #1c1c1a);
-      box-shadow:
-        0 0 0 3px #111,
-        0 8px 24px rgba(0,0,0,0.6),
-        inset 0 1px 2px rgba(255,255,255,0.05);
+      background: #222;
+      box-shadow: 0 0 0 2px #111;
+      transition: background 0.4s, box-shadow 0.4s;
+      z-index: 10;
     }
-
-    /* Vinyl record */
-    .record {
-      position: absolute;
-      inset: 8px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 50% 50%,
-          #1a1a1a 0%,
-          #111 30%,
-          #0d0d0d 31%,
-          #1a1a1a 32%,
-          #0d0d0d 38%,
-          #1a1a1a 39%,
-          #0d0d0d 46%,
-          #1a1a1a 47%,
-          #0d0d0d 55%,
-          #1a1a1a 56%,
-          #111 100%
-        );
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      transition: animation-play-state 0.3s;
-    }
-
-    .record.spinning {
-      animation: recordSpin 1.8s linear infinite;
-    }
-
-    @keyframes recordSpin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    /* Record shine */
-    .record::before {
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        transparent 0%, rgba(255,255,255,0.03) 15%,
-        transparent 30%, rgba(255,255,255,0.015) 50%,
-        transparent 70%, rgba(255,255,255,0.025) 85%,
-        transparent 100%
-      );
-    }
-
-    /* Center label area (album art goes here) */
-    .record-label {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 38%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      overflow: hidden;
-      background: #1a1a18;
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.05);
-      transition: opacity 0.5s ease;
-    }
-
-    #lp-album-art {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    #lp-album-art.loaded { opacity: 1; }
-
-    /* Center spindle */
-    .spindle {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 35%, #aaa, #555);
-      z-index: 3;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    }
-
-    /* ── TONEARM ─────────────────────────────────────── */
-    .tonearm-wrap {
-      position: absolute;
-      top: -4px; right: -18px;
-      width: 80px; height: 180px;
-      transform-origin: 18px 18px;
-      transform: rotate(-28deg);
-      transition: transform 0.8s cubic-bezier(.23,1,.32,1);
-      z-index: 4;
-    }
-
-    .tonearm-wrap.playing {
-      transform: rotate(0deg);
-    }
-
-    /* Pivot ball */
-    .tonearm-pivot {
-      position: absolute;
-      top: 4px; left: 6px;
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #ccc, #555);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-      z-index: 5;
-    }
-
-    /* Arm tube */
-    .tonearm-arm {
-      position: absolute;
-      top: 16px; left: 17px;
-      width: 3px;
-      height: 140px;
-      background: linear-gradient(to right, #999, #bbb, #888);
-      transform-origin: top center;
-      transform: rotate(12deg);
-      border-radius: 2px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    }
-
-    /* Headshell */
-    .tonearm-head {
-      position: absolute;
-      bottom: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 14px; height: 22px;
-      background: linear-gradient(to bottom, #aaa, #777);
-      border-radius: 3px 3px 6px 6px;
-    }
-    .tonearm-head::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 50%;
-      transform: translateX(-50%);
-      width: 2px; height: 6px;
+    .lp-led.on {
       background: #fc4f05;
-      border-radius: 1px;
+      box-shadow: 0 0 8px rgba(252,79,5,0.8), 0 0 0 2px #111;
     }
 
-    /* Counterweight */
-    .tonearm-weight {
+    /* Brand text */
+    .lp-brand {
       position: absolute;
-      top: 12px; left: 9px;
-      width: 16px; height: 20px;
-      background: radial-gradient(circle at 40% 30%, #aaa, #555);
-      border-radius: 4px;
-      transform: rotate(-12deg);
+      top: 20px; right: 26px;
+      font-family: 'DM Mono', monospace;
+      font-style: italic;
+      font-size: 0.58rem;
+      color: rgba(255,190,60,0.18);
+      letter-spacing: 0.12em;
+      z-index: 10;
     }
 
     /* ── SONG INFO ───────────────────────────────────── */
@@ -296,8 +138,8 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      padding-top: 22px;
-      width: 260px;
+      padding-top: 20px;
+      width: 280px;
       min-height: 110px;
     }
 
@@ -436,9 +278,8 @@
       #map-panel { width: 100%; height: 50%; }
       #divider { width: 100%; height: 1px; }
       #lp-panel { width: 100%; height: 50%; }
-      .turntable { width: 180px; height: 180px; }
-      .lp-info { width: 180px; padding-top: 14px; }
-      .plinth { padding: 18px 22px 16px; }
+      #three-lp-container { width: 200px; height: 200px; }
+      .lp-info { width: 200px; padding-top: 14px; }
       .lp-title { font-size: 0.9rem; }
     }
   </style>
@@ -459,53 +300,34 @@
 
   <!-- RIGHT: LP PLAYER -->
   <div id="lp-panel">
-
     <div class="lp-led" id="lp-led"></div>
     <div class="lp-brand">Replay–01</div>
+    
+    <!-- Three.js LP Player Container -->
+    <div id="three-lp-container"></div>
+    
+    <!-- Hidden canvas for album art texture -->
+    <canvas id="album-canvas" style="display:none;"></canvas>
 
-    <div class="plinth">
-      <!-- Turntable -->
-      <div class="turntable">
-        <div class="platter"></div>
-
-        <!-- Vinyl record -->
-        <div class="record" id="lp-record">
-          <div class="record-label">
-            <img id="lp-album-art" src="" alt="" crossorigin="anonymous" />
+    <!-- Song Info -->
+    <div class="lp-info">
+      <div class="lp-idle-msg" id="lp-idle-msg">앨범을 클릭해보세요</div>
+      <div class="lp-song-info" id="lp-song-info">
+        <div class="lp-month" id="lp-month"></div>
+        <div class="lp-title" id="lp-title"></div>
+        <div class="lp-artist" id="lp-artist"></div>
+        <div class="lp-genre" id="lp-genre"></div>
+        <div class="lp-meta">
+          <div class="lp-plays">
+            <div class="lp-plays-dot"></div>
+            <span class="lp-plays-count" id="lp-plays"></span>
           </div>
-          <div class="spindle"></div>
-        </div>
-
-        <!-- Tonearm -->
-        <div class="tonearm-wrap" id="lp-tonearm">
-          <div class="tonearm-weight"></div>
-          <div class="tonearm-pivot"></div>
-          <div class="tonearm-arm">
-            <div class="tonearm-head"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Info -->
-      <div class="lp-info">
-        <div class="lp-idle-msg" id="lp-idle-msg">앨범을 클릭해보세요</div>
-        <div class="lp-song-info" id="lp-song-info">
-          <div class="lp-month" id="lp-month"></div>
-          <div class="lp-title" id="lp-title"></div>
-          <div class="lp-artist" id="lp-artist"></div>
-          <div class="lp-genre" id="lp-genre"></div>
-          <div class="lp-meta">
-            <div class="lp-plays">
-              <div class="lp-plays-dot"></div>
-              <span class="lp-plays-count" id="lp-plays"></span>
-            </div>
-            <a id="lp-yt-btn" href="#" target="_blank" rel="noopener">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/>
-              </svg>
-              YouTube
-            </a>
-          </div>
+          <a id="lp-yt-btn" href="#" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/>
+            </svg>
+            YouTube
+          </a>
         </div>
       </div>
     </div>
