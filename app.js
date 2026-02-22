@@ -181,7 +181,7 @@ function updateLPPlayer(b) {
 
 /* ── Draw ───────────────────────────────────────────── */
 function draw() {
-  background(211);
+  clear(); // Transparent background to show CSS grid
 
   // Apply zoom + pan (no drag)
   translate(width / 2 + panX, height / 2 + panY);
