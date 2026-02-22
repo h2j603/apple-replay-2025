@@ -160,10 +160,10 @@ function initThreeLP() {
   // Scene
   threeScene = new THREE.Scene();
   
-  // Camera
+  // Camera - angled view to see LP label
   threeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-  threeCamera.position.set(0, 0, 5);
-  threeCamera.lookAt(0, 0, 0);
+  threeCamera.position.set(0, 2.5, 3.5);
+  threeCamera.lookAt(0, -0.3, 0);
   
   // Renderer
   threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -300,8 +300,8 @@ function initThreeLP() {
     metalness: 0.0
   });
   labelMesh = new THREE.Mesh(labelGeom, labelMat);
-  labelMesh.rotation.x = -Math.PI / 2;
-  labelMesh.position.y = 0.005;
+  labelMesh.rotation.x = -Math.PI / 2.5;
+  labelMesh.position.y = 0.01;
   threeScene.add(labelMesh);
   
   // Create placeholder texture for label
