@@ -131,366 +131,52 @@ function setup() {
   if (bubbles.length > 0) arrangeSpiral();
 }
 
-/* ── SIMPLE LP LABEL UPDATE (No Three.js) ───────────────── */
-  
-  // ── LIGHTING ─────────────────────────────────────────
-  // Ambient light
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-  threeScene.add(ambientLight);
-  
-  // Main directional light (warm)
-  const dirLight = new THREE.DirectionalLight(0xfff0dd, 0.8);
-  dirLight.position.set(2, 3, 4);
-  threeScene.add(dirLight);
-  
-  // Fill light
-  const fillLight = new THREE.DirectionalLight(0xddeeff, 0.3);
-  fillLight.position.set(-2, 1, 2);
-  threeScene.add(fillLight);
-  
-  // Point light for vinyl shine
-  const pointLight = new THREE.PointLight(0xffffff, 0.4, 10);
-  pointLight.position.set(0, 2, 2);
-  threeScene.add(pointLight);
-  
-  // Spotlight on label
-  const spotLight = new THREE.SpotLight(0xffffff, 0.5);
-  spotLight.position.set(0, 3, 2);
-  spotLight.angle = Math.PI / 6;
-  spotLight.penumbra = 0.3;
-  spotLight.target.position.set(0, 0, 0);
-  threeScene.add(spotLight);
-  threeScene.add(spotLight.target);
-  
-  // ── PLINTH (Wood Base) ───────────────────────────────
-  const plinthGeom = new THREE.BoxGeometry(2.8, 0.12, 2.8);
-  const plinthMat = new THREE.MeshStandardMaterial({
-    color: 0x2a1f0e,
-    roughness: 0.8,
-    metalness: 0.1
-  });
-  const plinthMesh = new THREE.Mesh(plinthGeom, plinthMat);
-  plinthMesh.position.y = -0.35;
-  threeScene.add(plinthMesh);
+/* ── SIMPLE LP PLAYER UPDATE ──────────────────────────── */
+function updateLPPlayer(b) {
+  const idleMsg = document.getElementById('lp-idle-msg');
+  const songInfo = document.getElementById('lp-song-info');
+  const lpLabel = document.getElementById('lp-label');
 
-  // Plinth top surface
-  const plinthTopGeom = new THREE.BoxGeometry(2.7, 0.015, 2.7);
-  const plinthTopMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1208,
-    roughness: 0.9,
-    metalness: 0.0
-  });
-  const plinthTopMesh = new THREE.Mesh(plinthTopGeom, plinthTopMat);
-  plinthTopMesh.position.y = -0.28;
-  threeScene.add(plinthTopMesh);
+  if (!b) {
+    if (idleMsg) idleMsg.classList.remove('hidden');
+    if (songInfo) songInfo.classList.remove('visible');
+    return;
+  }
 
-  // ── PLATTER (Metal Ring) ─────────────────────────────
-  const platterGeom = new THREE.CylinderGeometry(1.15, 1.15, 0.06, 64);
-  const platterMat = new THREE.MeshStandardMaterial({
-    color: 0x2a2a28,
-    roughness: 0.3,
-    metalness: 0.7
-  });
-  platterMesh = new THREE.Mesh(platterGeom, platterMat);
-  platterMesh.position.y = -0.18;
-  threeScene.add(platterMesh);
-
-  // Platter edge ring
-  const platterRingGeom = new THREE.TorusGeometry(1.15, 0.025, 16, 64);
-  const platterRingMat = new THREE.MeshStandardMaterial({
-    color: 0x111111,
-    roughness: 0.5,
-    metalness: 0.8
-  });
-  const platterRing = new THREE.Mesh(platterRingGeom, platterRingMat);
-  platterRing.position.y = -0.14;
-  threeScene.add(platterRing);
-  
-  // ── VINYL RECORD ──────────────────────────────────────
-  // Create vinyl with groove texture (cylinder for 3D effect)
-  const vinylGeom = new THREE.CylinderGeometry(1.0, 1.0, 0.02, 64);
-  
-  // Create canvas for vinyl texture with grooves
-  const vinylCanvas = document.createElement('canvas');
-  vinylCanvas.width = 1024;
-  vinylCanvas.height = 1024;
-  const vCtx = vinylCanvas.getContext('2d');
-  
-  // Draw vinyl grooves with dithering effect
-  const gradient = vCtx.createRadialGradient(512, 512, 100, 512, 512, 500);
-  gradient.addColorStop(0, '#0d0d0d');
-  gradient.addColorStop(0.3, '#1a1a1a');
-  gradient.addColorStop(0.31, '#0d0d0d');
-  gradient.addColorStop(0.38, '#1a1a1a');
-  gradient.addColorStop(0.39, '#0d0d0d');
-  gradient.addColorStop(0.46, '#1a1a1a');
-  gradient.addColorStop(0.47, '#0d0d0d');
-  gradient.addColorStop(0.55, '#1a1a1a');
-  gradient.addColorStop(0.56, '#0d0d0d');
-  gradient.addColorStop(1, '#111111');
-  vCtx.fillStyle = gradient;
-  vCtx.fillRect(0, 0, 1024, 1024);
-  
-  // Add dithering noise for analog feel
-  for (let i = 0; i < 80000; i++) {
-    const x = Math.random() * 1024;
-    const y = Math.random() * 1024;
-    const dist = Math.sqrt((x - 512) ** 2 + (y - 512) ** 2);
-    if (dist > 100 && dist < 500) {
-      const alpha = Math.random() * 0.15;
-      vCtx.fillStyle = `rgba(${Math.random() > 0.5 ? 255 : 0}, ${Math.random() > 0.5 ? 255 : 0}, ${Math.random() > 0.5 ? 255 : 0}, ${alpha})`;
-      vCtx.fillRect(x, y, 1, 1);
+  // Update album art on LP label
+  if (lpLabel) {
+    if (b.coverUrl) {
+      lpLabel.innerHTML = `<img src="${b.coverUrl}" alt="Album Cover">`;
+    } else {
+      lpLabel.innerHTML = '<span id="lp-label-placeholder">Album</span>';
     }
   }
-  
-  // Add subtle shine
-  const shineGradient = vCtx.createConicGradient(0, 512, 512);
-  shineGradient.addColorStop(0, 'rgba(255,255,255,0.02)');
-  shineGradient.addColorStop(0.25, 'rgba(255,255,255,0.01)');
-  shineGradient.addColorStop(0.5, 'rgba(255,255,255,0.02)');
-  shineGradient.addColorStop(0.75, 'rgba(255,255,255,0.01)');
-  shineGradient.addColorStop(1, 'rgba(255,255,255,0.02)');
-  vCtx.fillStyle = shineGradient;
-  vCtx.fillRect(0, 0, 1024, 1024);
-  
-  const vinylTexture = new THREE.CanvasTexture(vinylCanvas);
-  const vinylMat = new THREE.MeshStandardMaterial({
-    map: vinylTexture,
-    roughness: 0.3,
-    metalness: 0.1
-  });
-  vinylMesh = new THREE.Mesh(vinylGeom, vinylMat);
-  vinylMesh.position.y = 0;
-  threeScene.add(vinylMesh);
-  
-  // ── CENTER LABEL (Album Art) ──────────────────────────
-  // Use cylinder for 3D label on top of vinyl
-  const labelGeom = new THREE.CylinderGeometry(0.38, 0.38, 0.015, 64);
-  const labelMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a18,
-    roughness: 0.7,
-    metalness: 0.0
-  });
-  labelMesh = new THREE.Mesh(labelGeom, labelMat);
-  labelMesh.position.y = 0.018;
-  threeScene.add(labelMesh);
-  
-  // Create placeholder texture for label
-  createLabelTexture(null);
-  
-  // Spindle
-  const spindleGeom = new THREE.CylinderGeometry(0.03, 0.03, 0.15, 16);
-  const spindleMat = new THREE.MeshStandardMaterial({
-    color: 0x888888,
-    roughness: 0.3,
-    metalness: 0.8
-  });
-  const spindle = new THREE.Mesh(spindleGeom, spindleMat);
-  spindle.position.y = 0.03;
-  threeScene.add(spindle);
-  
-  // ── TONEARM ──────────────────────────────────────────
-  createTonearm();
-  
-  // ── LED INDICATOR ─────────────────────────────────────
-  const ledGeom = new THREE.CircleGeometry(0.04, 16);
-  const ledMat = new THREE.MeshBasicMaterial({
-    color: 0x222222
-  });
-  ledMesh = new THREE.Mesh(ledGeom, ledMat);
-  ledMesh.position.set(1.1, 0.01, 1.0);
-  threeScene.add(ledMesh);
-  
-  // LED glow
-  const ledGlowGeom = new THREE.CircleGeometry(0.06, 16);
-  const ledGlowMat = new THREE.MeshBasicMaterial({
-    color: 0x000000,
-    transparent: true,
-    opacity: 0
-  });
-  const ledGlow = new THREE.Mesh(ledGlowGeom, ledGlowMat);
-  ledGlow.position.set(1.1, 0.005, 1.0);
-  threeScene.add(ledGlow);
-  
-  // Store LED glow reference
-  ledMesh.userData.glow = ledGlow;
-  
-  // Start animation loop
-  animateThreeLP();
-}
 
-/* ── CREATE TONEARM ──────────────────────────────────── */
-function createTonearm() {
-  tonearmGroup = new THREE.Group();
+  // Text info
+  const monthEl = document.getElementById('lp-month');
+  const titleEl = document.getElementById('lp-title');
+  const artistEl = document.getElementById('lp-artist');
+  const playsEl = document.getElementById('lp-plays');
   
-  // Pivot base
-  const pivotBaseGeom = new THREE.CylinderGeometry(0.08, 0.1, 0.08, 16);
-  const pivotBaseMat = new THREE.MeshStandardMaterial({
-    color: 0x333333,
-    roughness: 0.4,
-    metalness: 0.6
-  });
-  const pivotBase = new THREE.Mesh(pivotBaseGeom, pivotBaseMat);
-  pivotBase.position.set(1.05, 0.05, 0.9);
-  tonearmGroup.add(pivotBase);
+  if (monthEl) monthEl.textContent = b.month;
+  if (titleEl) titleEl.textContent = b.title;
+  if (artistEl) artistEl.textContent = b.artist || '';
+  if (playsEl) playsEl.textContent = b.plays + '회 재생';
   
-  // Arm tube
-  const armTubeGeom = new THREE.CylinderGeometry(0.015, 0.015, 0.8, 8);
-  const armTubeMat = new THREE.MeshStandardMaterial({
-    color: 0xaaaaaa,
-    roughness: 0.3,
-    metalness: 0.7
-  });
-  const armTube = new THREE.Mesh(armTubeGeom, armTubeMat);
-  armTube.rotation.z = Math.PI / 2 - 0.2;
-  armTube.position.set(0.65, 0.08, 0.55);
-  tonearmGroup.add(armTube);
-  
-  // Headshell
-  const headshellGeom = new THREE.BoxGeometry(0.06, 0.04, 0.1);
-  const headshellMat = new THREE.MeshStandardMaterial({
-    color: 0x888888,
-    roughness: 0.4,
-    metalness: 0.6
-  });
-  const headshell = new THREE.Mesh(headshellGeom, headshellMat);
-  headshell.position.set(0.25, 0.05, 0.5);
-  tonearmGroup.add(headshell);
-  
-  // Cartridge
-  const cartridgeGeom = new THREE.BoxGeometry(0.04, 0.03, 0.06);
-  const cartridgeMat = new THREE.MeshStandardMaterial({
-    color: 0x222222,
-    roughness: 0.5,
-    metalness: 0.3
-  });
-  const cartridge = new THREE.Mesh(cartridgeGeom, cartridgeMat);
-  cartridge.position.set(0.25, 0.02, 0.46);
-  tonearmGroup.add(cartridge);
-  
-  // Stylus (needle)
-  const stylusGeom = new THREE.ConeGeometry(0.008, 0.03, 8);
-  const stylusMat = new THREE.MeshStandardMaterial({
-    color: 0xfc4f05,
-    roughness: 0.3,
-    metalness: 0.5
-  });
-  const stylus = new THREE.Mesh(stylusGeom, stylusMat);
-  stylus.rotation.x = Math.PI;
-  stylus.position.set(0.25, 0.01, 0.43);
-  tonearmGroup.add(stylus);
-  
-  // Counterweight
-  const counterweightGeom = new THREE.CylinderGeometry(0.05, 0.05, 0.06, 16);
-  const counterweightMat = new THREE.MeshStandardMaterial({
-    color: 0x555555,
-    roughness: 0.4,
-    metalness: 0.6
-  });
-  const counterweight = new THREE.Mesh(counterweightGeom, counterweightMat);
-  counterweight.rotation.z = Math.PI / 2;
-  counterweight.position.set(1.15, 0.1, 0.95);
-  tonearmGroup.add(counterweight);
-  
-  // Set initial rotation (idle position)
-  tonearmGroup.rotation.y = THREE.MathUtils.degToRad(ARM_IDLE);
-  
-  threeScene.add(tonearmGroup);
-}
+  const genreEl = document.getElementById('lp-genre');
+  if (genreEl) {
+    genreEl.textContent = b.genre || '';
+    genreEl.style.display = b.genre ? 'inline' : 'none';
+  }
 
-/* ── CREATE LABEL TEXTURE ─────────────────────────────── */
-function createLabelTexture(coverUrl) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext('2d');
-  
-  // Default label background
-  ctx.fillStyle = '#1a1a18';
-  ctx.fillRect(0, 0, 512, 512);
-  
-  // Center circle
-  ctx.beginPath();
-  ctx.arc(256, 256, 240, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  
-  // Inner circle
-  ctx.beginPath();
-  ctx.arc(256, 256, 40, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  
-  // If cover URL provided, load image
-  if (coverUrl) {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(256, 256, 230, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(img, 0, 0, 460, 460);
-      ctx.restore();
-      
-      // Update texture
-      if (albumTexture) albumTexture.dispose();
-      albumTexture = new THREE.CanvasTexture(canvas);
-      labelMesh.material.map = albumTexture;
-      labelMesh.material.needsUpdate = true;
-    };
-    img.src = coverUrl;
-  } else {
-    // Show placeholder
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.font = 'bold 48px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('APPLE', 256, 260);
-    ctx.font = '28px sans-serif';
-    ctx.fillText('REPLAY', 256, 310);
+  const ytBtn = document.getElementById('lp-yt-btn');
+  if (ytBtn) {
+    ytBtn.href = b.youtubeUrl || '#';
+    ytBtn.style.display = b.youtubeUrl ? 'inline-flex' : 'none';
   }
-  
-  // Create/update texture
-  if (albumTexture) albumTexture.dispose();
-  albumTexture = new THREE.CanvasTexture(canvas);
-  labelMesh.material.map = albumTexture;
-  labelMesh.material.needsUpdate = true;
-}
 
-/* ── THREE.JS ANIMATION LOOP ──────────────────────────── */
-function animateThreeLP() {
-  requestAnimationFrame(animateThreeLP);
-  
-  // Rotate vinyl when playing
-  if (isPlaying && vinylMesh) {
-    vinylMesh.rotation.y += 0.03;
-  }
-  
-  // Animate tonearm
-  if (tonearmGroup) {
-    // Smooth interpolation
-    armCurrentRotation += (armTargetRotation - armCurrentRotation) * 0.05;
-    tonearmGroup.rotation.y = THREE.MathUtils.degToRad(armCurrentRotation);
-  }
-  
-  // LED animation
-  if (ledMesh && isPlaying) {
-    const pulse = 0.5 + Math.sin(Date.now() * 0.005) * 0.5;
-    ledMesh.material.color.setHex(0xfc4f05);
-    if (ledMesh.userData.glow) {
-      ledMesh.userData.glow.material.color.setHex(0xfc4f05);
-      ledMesh.userData.glow.material.opacity = 0.3 + pulse * 0.3;
-    }
-  } else if (ledMesh) {
-    ledMesh.material.color.setHex(0x222222);
-    if (ledMesh.userData.glow) {
-      ledMesh.userData.glow.material.opacity = 0;
-    }
-  }
-  
-  threeRenderer.render(threeScene, threeCamera);
+  if (idleMsg) idleMsg.classList.add('hidden');
+  if (songInfo) songInfo.classList.add('visible');
 }
 
 /* ── Draw ───────────────────────────────────────────── */
