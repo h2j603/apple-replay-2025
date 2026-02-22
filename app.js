@@ -12,9 +12,11 @@ let connections = [];
 let genreConnections = [];
 let canvasReady = false;
 
-// Toggle state for connections
+// Toggle state for connections (changed by click count)
 let showArtistConnections = true;
 let showGenreConnections = false;
+let lastClickTime = 0;
+let lastClickedTrack = null;
 
 // Larger radius range for more visible size difference
 const MIN_RADIUS = 5;
@@ -143,9 +145,6 @@ function setup() {
   textAlign(CENTER, CENTER);
   canvasReady = true;
   if (bubbles.length > 0) arrangeSpiral();
-  
-  // Create toggle buttons
-  createConnectionToggles();
   
   // Initialize Three.js LP Player
   initThreeLP();
@@ -537,73 +536,6 @@ function animateThreeLP() {
   threeRenderer.render(threeScene, threeCamera);
 }
 
-/* ── Connection Toggle Buttons ────────────────────────── */
-function createConnectionToggles() {
-  const mapPanel = document.getElementById('map-panel');
-  
-  // Container for toggles
-  const toggleContainer = document.createElement('div');
-  toggleContainer.id = 'toggle-container';
-  toggleContainer.style.cssText = `
-    position: absolute;
-    top: 24px; right: 28px;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  `;
-  
-  // Artist toggle
-  const artistToggle = document.createElement('label');
-  artistToggle.innerHTML = `
-    <input type="checkbox" id="toggle-artist" checked>
-    <span>아티스트 연결</span>
-  `;
-  artistToggle.style.cssText = `
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.62rem;
-    color: rgba(255,255,255,0.5);
-    cursor: pointer;
-    transition: color 0.2s;
-  `;
-  artistToggle.querySelector('input').style.cssText = `
-    accent-color: #fc4f05;
-    width: 14px; height: 14px;
-  `;
-  artistToggle.addEventListener('change', (e) => {
-    showArtistConnections = e.target.checked;
-  });
-  
-  // Genre toggle
-  const genreToggle = document.createElement('label');
-  genreToggle.innerHTML = `
-    <input type="checkbox" id="toggle-genre">
-    <span>장르 연결</span>
-  `;
-  genreToggle.style.cssText = `
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.62rem;
-    color: rgba(255,255,255,0.5);
-    cursor: pointer;
-    transition: color 0.2s;
-  `;
-  genreToggle.querySelector('input').style.cssText = `
-    accent-color: #fc4f05;
-    width: 14px; height: 14px;
-  `;
-  genreToggle.addEventListener('change', (e) => {
-    showGenreConnections = e.target.checked;
-  });
-  
-  toggleContainer.appendChild(artistToggle);
-  toggleContainer.appendChild(genreToggle);
-  mapPanel.appendChild(toggleContainer);
-}
-
 /* ── Draw ───────────────────────────────────────────── */
 function draw() {
   background(211);
@@ -780,10 +712,10 @@ function drawBubble(b, isHov, isCon) {
   const gAlpha = isHov ? 0.4 : isCon ? 0.2 : 0.08;
   const gSize = isHov ? b.radius * 3 : b.radius * 2;
 
-  // Glow
+  // Glow (Orangered color #FF4500)
   noStroke();
   for (let i = 4; i > 0; i--) {
-    fill(red(b.col), green(b.col), blue(b.col), gAlpha * (1 - i / 4.5) * 255);
+    fill(255, 69, 0, gAlpha * (1 - i / 4.5) * 255);
     ellipse(b.x, b.y, gSize + i * 8, gSize + i * 8);
   }
 
@@ -853,6 +785,21 @@ function mousePressed() {
   });
   
   if (clicked) {
+    const currentTime = millis();
+    const isDoubleClick = (currentTime - lastClickTime < 400) && (lastClickedTrack === clicked.idx);
+    
+    if (isDoubleClick) {
+      // Double click: show genre connections
+      showArtistConnections = false;
+      showGenreConnections = true;
+    } else {
+      // Single click: show artist connections
+      showArtistConnections = true;
+      showGenreConnections = false;
+    }
+    
+    lastClickTime = currentTime;
+    lastClickedTrack = clicked.idx;
     clickedBubble = clicked;
     lastClickedBubble = clickedBubble;
     updateLPPlayer(lastClickedBubble);
@@ -869,16 +816,16 @@ function updateLPPlayer(b) {
     // Stop playing
     isPlaying = false;
     armTargetRotation = ARM_IDLE;
-    led.classList.remove('on');
-    idleMsg.classList.remove('hidden');
-    songInfo.classList.remove('visible');
+    if (led) led.classList.remove('on');
+    if (idleMsg) idleMsg.classList.remove('hidden');
+    if (songInfo) songInfo.classList.remove('visible');
     return;
   }
 
   // Start playing
   isPlaying = true;
   armTargetRotation = ARM_PLAY;
-  led.classList.add('on');
+  if (led) led.classList.add('on');
   
   // Update current bubble
   currentBubble = b;

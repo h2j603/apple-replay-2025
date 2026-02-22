@@ -40,15 +40,15 @@
     /* CENTERED TITLE */
     .center-title {
       position: absolute;
-      top: 50%;
+      top: 24px;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       z-index: 100;
       pointer-events: none;
     }
     .center-title h1 {
       font-family: 'Hauser', serif;
-      font-size: 3rem;
+      font-size: 2rem;
       color: black;
       letter-spacing: 0.05em;
       white-space: nowrap;
@@ -120,6 +120,16 @@
       z-index: 1;
       width: 480px;
       height: 480px;
+    }
+    #three-lp-container::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='black' fill-opacity='0.3'/%3E%3Ccircle cx='3' cy='3' r='1' fill='black' fill-opacity='0.3'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      pointer-events: none;
+      z-index: 10;
+      mix-blend-mode: multiply;
     }
 
     /* LED indicator */
