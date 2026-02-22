@@ -343,7 +343,15 @@
       font-size: 0.78rem;
       color: rgba(255,220,150,0.45);
       font-weight: 300;
+      margin-bottom: 6px;
+    }
+    
+    .lp-genre {
+      font-size: 0.65rem;
+      color: rgba(252,79,5,0.6);
+      font-weight: 400;
       margin-bottom: 14px;
+      display: none;
     }
 
     .lp-meta {
@@ -444,7 +452,7 @@
       <h1>2025</h1>
       <p>Music Map</p>
     </div>
-    <div class="map-zoom-hint">스크롤로 확대 · 드래그로 이동</div>
+    <div class="map-zoom-hint">스크롤로 확대 · 클릭으로 선택</div>
   </div>
 
   <div id="divider"></div>
@@ -480,11 +488,12 @@
 
       <!-- Info -->
       <div class="lp-info">
-        <div class="lp-idle-msg" id="lp-idle-msg">앨범에 마우스를 올려보세요</div>
+        <div class="lp-idle-msg" id="lp-idle-msg">앨범을 클릭해보세요</div>
         <div class="lp-song-info" id="lp-song-info">
           <div class="lp-month" id="lp-month"></div>
           <div class="lp-title" id="lp-title"></div>
           <div class="lp-artist" id="lp-artist"></div>
+          <div class="lp-genre" id="lp-genre"></div>
           <div class="lp-meta">
             <div class="lp-plays">
               <div class="lp-plays-dot"></div>

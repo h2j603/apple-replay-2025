@@ -6,22 +6,30 @@ let data = [];
 let bubbles = [];
 let images = {};
 let hoveredBubble = null;
-let lastHoveredBubble = null;
+let clickedBubble = null;
+let lastClickedBubble = null;
 let connections = [];
+let genreConnections = [];
 let canvasReady = false;
 
-// ~50% smaller than before
-const MIN_RADIUS = 8;
-const MAX_RADIUS = 28;
-const MAX_PLAYS  = 43;
+// Toggle state for connections
+let showArtistConnections = true;
+let showGenreConnections = false;
 
-// Zoom & pan state
+// Larger radius range for more visible size difference
+const MIN_RADIUS = 5;
+const MAX_RADIUS = 50;
+const MAX_PLAYS = 43;
+
+// Zoom state (drag removed)
 let zoomLevel = 1.0;
 const ZOOM_MIN = 0.4;
 const ZOOM_MAX = 4.0;
 let panX = 0, panY = 0;
-let isDragging = false;
-let dragStartX, dragStartY, panStartX, panStartY;
+
+// Hover repulsion state
+let repulsionActive = false;
+let repulsionTarget = null;
 
 /* ── Preload ────────────────────────────────────────── */
 function preload() {
@@ -53,12 +61,15 @@ function createBubbles() {
   let idx = 0;
   data.forEach((month, mi) => {
     month.songs.forEach((song, si) => {
+      // Amplified size difference using power function
       const norm = (song.plays - 1) / (MAX_PLAYS - 1);
-      const r    = MIN_RADIUS + Math.pow(norm, 0.5) * (MAX_RADIUS - MIN_RADIUS);
+      const r = MIN_RADIUS + Math.pow(norm, 0.6) * (MAX_RADIUS - MIN_RADIUS);
+      
       bubbles.push({
         month: month.month_label,
         title: song.title,
         artist: song.artist,
+        genre: song.genre || null, // Genre field (optional)
         plays: song.plays,
         radius: r,
         imgKey: `${mi}-${si}`,
@@ -66,108 +77,296 @@ function createBubbles() {
         col: getColorFromIdx(idx),
         youtubeUrl: song.youtube_url || '',
         x: 0, y: 0,
+        vx: 0, vy: 0, // Velocity for repulsion animation
         idx: idx++,
       });
     });
   });
   buildConnections();
+  buildGenreConnections();
   if (canvasReady) arrangeSpiral();
 }
 
 function buildConnections() {
   connections = [];
-  for (let i = 0; i < bubbles.length; i++)
-    for (let j = i + 1; j < bubbles.length; j++)
-      if (bubbles[i].artist && bubbles[i].artist === bubbles[j].artist)
-        connections.push({ a: bubbles[i], b: bubbles[j] });
+  for (let i = 0; i < bubbles.length; i++) {
+    for (let j = i + 1; j < bubbles.length; j++) {
+      if (bubbles[i].artist && bubbles[i].artist === bubbles[j].artist) {
+        connections.push({ a: bubbles[i], b: bubbles[j], type: 'artist' });
+      }
+    }
+  }
+}
+
+function buildGenreConnections() {
+  genreConnections = [];
+  for (let i = 0; i < bubbles.length; i++) {
+    for (let j = i + 1; j < bubbles.length; j++) {
+      // Only connect if both have genre and it's the same
+      if (bubbles[i].genre && bubbles[j].genre && bubbles[i].genre === bubbles[j].genre) {
+        genreConnections.push({ a: bubbles[i], b: bubbles[j], type: 'genre' });
+      }
+    }
+  }
 }
 
 /* ── Setup ──────────────────────────────────────────── */
 function setup() {
   const panel = document.getElementById('map-panel');
-  const cnv   = createCanvas(panel.offsetWidth, panel.offsetHeight);
+  const cnv = createCanvas(panel.offsetWidth, panel.offsetHeight);
   cnv.parent('map-panel');
+  // Disable drag on canvas
+  cnv.elt.addEventListener('mousedown', (e) => {
+    if (hoveredBubble) {
+      // Click on bubble - handled in mousePressed
+    }
+  });
   imageMode(CENTER);
   textAlign(CENTER, CENTER);
   canvasReady = true;
   if (bubbles.length > 0) arrangeSpiral();
+  
+  // Create toggle buttons
+  createConnectionToggles();
+}
+
+/* ── Connection Toggle Buttons ────────────────────────── */
+function createConnectionToggles() {
+  const mapPanel = document.getElementById('map-panel');
+  
+  // Container for toggles
+  const toggleContainer = document.createElement('div');
+  toggleContainer.id = 'toggle-container';
+  toggleContainer.style.cssText = `
+    position: absolute;
+    top: 24px; right: 28px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `;
+  
+  // Artist toggle
+  const artistToggle = document.createElement('label');
+  artistToggle.innerHTML = `
+    <input type="checkbox" id="toggle-artist" checked>
+    <span>아티스트 연결</span>
+  `;
+  artistToggle.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: color 0.2s;
+  `;
+  artistToggle.querySelector('input').style.cssText = `
+    accent-color: #fc4f05;
+    width: 14px; height: 14px;
+  `;
+  artistToggle.addEventListener('change', (e) => {
+    showArtistConnections = e.target.checked;
+  });
+  
+  // Genre toggle
+  const genreToggle = document.createElement('label');
+  genreToggle.innerHTML = `
+    <input type="checkbox" id="toggle-genre">
+    <span>장르 연결</span>
+  `;
+  genreToggle.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: color 0.2s;
+  `;
+  genreToggle.querySelector('input').style.cssText = `
+    accent-color: #fc4f05;
+    width: 14px; height: 14px;
+  `;
+  genreToggle.addEventListener('change', (e) => {
+    showGenreConnections = e.target.checked;
+  });
+  
+  toggleContainer.appendChild(artistToggle);
+  toggleContainer.appendChild(genreToggle);
+  mapPanel.appendChild(toggleContainer);
 }
 
 /* ── Draw ───────────────────────────────────────────── */
 function draw() {
   background(10);
 
-  // Apply zoom + pan
+  // Apply zoom + pan (no drag)
   translate(width / 2 + panX, height / 2 + panY);
   scale(zoomLevel);
 
   // World-space mouse (accounting for zoom/pan)
-  const mx = (mouseX - width  / 2 - panX) / zoomLevel;
+  const mx = (mouseX - width / 2 - panX) / zoomLevel;
   const my = (mouseY - height / 2 - panY) / zoomLevel;
 
-  // Hover detection
+  // Hover detection (for visual feedback)
   let newHovered = null;
   bubbles.forEach(b => {
     if (dist(mx, my, b.x, b.y) < b.radius) newHovered = b;
   });
+  
+  hoveredBubble = newHovered;
 
-  if (newHovered !== hoveredBubble) {
-    hoveredBubble = newHovered;
-    if (hoveredBubble) {
-      lastHoveredBubble = hoveredBubble;
-      updateLPPlayer(lastHoveredBubble);
-    }
+  // Apply repulsion effect when hovering
+  if (hoveredBubble) {
+    applyRepulsion(hoveredBubble);
+    repulsionActive = true;
+    repulsionTarget = hoveredBubble;
+  } else {
+    // Smoothly return to original positions
+    applyReturnForce();
+    repulsionActive = false;
+    repulsionTarget = null;
   }
 
+  // Draw connections based on toggle states
   drawConnections();
+  
   bubbles.forEach(b => {
     const isHov = b === hoveredBubble;
-    const isCon = hoveredBubble && b.artist === hoveredBubble.artist && !isHov;
+    const isCon = hoveredBubble && (
+      (showArtistConnections && b.artist === hoveredBubble.artist) ||
+      (showGenreConnections && b.genre && hoveredBubble.genre && b.genre === hoveredBubble.genre)
+    ) && !isHov;
     drawBubble(b, isHov, isCon);
   });
 
-  // Cursor (check in screen space)
-  document.body.style.cursor = (hoveredBubble && !isDragging) ? 'pointer' : (isDragging ? 'grabbing' : 'grab');
+  // Cursor
+  document.body.style.cursor = hoveredBubble ? 'pointer' : 'default';
+}
+
+/* ── Repulsion Effect ───────────────────────────────── */
+function applyRepulsion(target) {
+  const repulsionRadius = target.radius * 8; // Repel within 8x radius
+  const repulsionStrength = 0.8; // Strong repulsion
+  
+  bubbles.forEach(b => {
+    if (b === target) return;
+    
+    const d = dist(target.x, target.y, b.x, b.y);
+    
+    if (d < repulsionRadius && d > 0) {
+      // Calculate repulsion force
+      const force = (repulsionRadius - d) / repulsionRadius * repulsionStrength;
+      const angle = atan2(b.y - target.y, b.x - target.x);
+      
+      // Apply velocity
+      b.vx += cos(angle) * force;
+      b.vy += sin(angle) * force;
+    }
+  });
+  
+  // Apply velocity to position with damping
+  bubbles.forEach(b => {
+    if (b === target) return;
+    b.x += b.vx;
+    b.y += b.vy;
+    b.vx *= 0.85; // Damping
+    b.vy *= 0.85;
+  });
+}
+
+function applyReturnForce() {
+  const returnStrength = 0.15;
+  const damping = 0.8;
+  
+  bubbles.forEach(b => {
+    // Calculate original spiral position
+    const origX = b._originalX;
+    const origY = b._originalY;
+    
+    if (origX !== undefined && origY !== undefined) {
+      // Pull back to original position
+      b.vx += (origX - b.x) * returnStrength;
+      b.vy += (origY - b.y) * returnStrength;
+      
+      b.x += b.vx;
+      b.y += b.vy;
+      b.vx *= damping;
+      b.vy *= damping;
+    }
+  });
 }
 
 /* ── Connections ────────────────────────────────────── */
 function drawConnections() {
-  connections.forEach(({ a, b }) => {
-    const active = hoveredBubble && a.artist === hoveredBubble.artist;
-    if (active) {
-      stroke(255, 255, 255, 100); strokeWeight(1 / zoomLevel);
+  // Draw artist connections
+  if (showArtistConnections) {
+    connections.forEach(({ a, b }) => {
+      const active = hoveredBubble && a.artist === hoveredBubble.artist;
+      if (active) {
+        stroke(255, 255, 255, 100); strokeWeight(1 / zoomLevel);
+        drawingContext.setLineDash([]);
+      } else {
+        stroke(255, 255, 255, 14); strokeWeight(0.5 / zoomLevel);
+        drawingContext.setLineDash([3, 7]);
+      }
+      line(a.x, a.y, b.x, b.y);
       drawingContext.setLineDash([]);
-    } else {
-      stroke(255, 255, 255, 14); strokeWeight(0.5 / zoomLevel);
-      drawingContext.setLineDash([3, 7]);
-    }
-    line(a.x, a.y, b.x, b.y);
-    drawingContext.setLineDash([]);
 
-    if (active) {
-      noStroke(); fill(255, 255, 255, 140);
-      ellipse((a.x + b.x) / 2, (a.y + b.y) / 2, 3 / zoomLevel, 3 / zoomLevel);
-    }
-  });
+      if (active) {
+        noStroke(); fill(255, 255, 255, 140);
+        ellipse((a.x + b.x) / 2, (a.y + b.y) / 2, 3 / zoomLevel, 3 / zoomLevel);
+      }
+    });
+  }
+  
+  // Draw genre connections
+  if (showGenreConnections) {
+    const genreColor = color('rgba(252, 79, 5, 0.8)'); // Orange for genre
+    genreConnections.forEach(({ a, b }) => {
+      const active = hoveredBubble && a.genre && a.genre === hoveredBubble.genre;
+      if (active) {
+        stroke(252, 79, 5, 180); strokeWeight(1.5 / zoomLevel);
+        drawingContext.setLineDash([]);
+      } else {
+        stroke(252, 79, 5, 30); strokeWeight(0.7 / zoomLevel);
+        drawingContext.setLineDash([4, 6]);
+      }
+      line(a.x, a.y, b.x, b.y);
+      drawingContext.setLineDash([]);
+
+      if (active) {
+        noStroke(); fill(252, 79, 5, 200);
+        ellipse((a.x + b.x) / 2, (a.y + b.y) / 2, 4 / zoomLevel, 4 / zoomLevel);
+      }
+    });
+  }
 }
 
 /* ── Spiral ─────────────────────────────────────────── */
 function arrangeSpiral() {
-  const scale = min(width, height) * 0.006; // slightly tighter
+  // Increased spacing: scale * 5.0 instead of 3.4
+  const scale = min(width, height) * 0.008;
   bubbles.forEach((b, i) => {
     const angle = i * 2.399; // golden angle
-    const r     = scale * Math.sqrt(i + 1) * 3.4;
+    const r = scale * Math.sqrt(i + 1) * 5.0; // Increased spacing
     b.x = cos(angle) * r;
     b.y = sin(angle) * r;
+    // Store original position for return force
+    b._originalX = b.x;
+    b._originalY = b.y;
+    b.vx = 0;
+    b.vy = 0;
   });
 }
 
 /* ── Draw Bubble ────────────────────────────────────── */
 function drawBubble(b, isHov, isCon) {
   const imgSize = b.radius * 1.85;
-  const dimmed  = hoveredBubble && !isHov && !isCon;
-  const gAlpha  = isHov ? 0.4 : isCon ? 0.2 : 0.08;
-  const gSize   = isHov ? b.radius * 3 : b.radius * 2;
+  const dimmed = hoveredBubble && !isHov && !isCon;
+  const gAlpha = isHov ? 0.4 : isCon ? 0.2 : 0.08;
+  const gSize = isHov ? b.radius * 3 : b.radius * 2;
 
   // Glow
   noStroke();
@@ -189,7 +388,7 @@ function drawBubble(b, isHov, isCon) {
     const asp = img.width / img.height;
     let dw, dh;
     if (asp > 1) { dh = imgSize; dw = imgSize * asp; }
-    else         { dw = imgSize; dh = imgSize / asp; }
+    else { dw = imgSize; dh = imgSize / asp; }
     image(img, 0, 0, dw, dh);
 
     drawingContext.globalAlpha = 1;
@@ -221,7 +420,7 @@ function mouseWheel(event) {
   const newZoom = constrain(zoomLevel * factor, ZOOM_MIN, ZOOM_MAX);
 
   // Adjust pan so zoom centers on mouse
-  const mx = mouseX - width  / 2;
+  const mx = mouseX - width / 2;
   const my = mouseY - height / 2;
   panX = mx - (mx - panX) * (newZoom / zoomLevel);
   panY = my - (my - panY) * (newZoom / zoomLevel);
@@ -230,34 +429,31 @@ function mouseWheel(event) {
   return false; // prevent page scroll
 }
 
-/* ── Pan (drag) ─────────────────────────────────────── */
+/* ── Click Event (replaces hover) ─────────────────────── */
 function mousePressed() {
-  // Only drag if not hovering a bubble
-  if (!hoveredBubble) {
-    isDragging = true;
-    dragStartX = mouseX; dragStartY = mouseY;
-    panStartX  = panX;   panStartY  = panY;
+  // Handle click on bubble
+  const mx = (mouseX - width / 2 - panX) / zoomLevel;
+  const my = (mouseY - height / 2 - panY) / zoomLevel;
+  
+  let clicked = null;
+  bubbles.forEach(b => {
+    if (dist(mx, my, b.x, b.y) < b.radius) clicked = b;
+  });
+  
+  if (clicked) {
+    clickedBubble = clicked;
+    lastClickedBubble = clickedBubble;
+    updateLPPlayer(lastClickedBubble);
   }
-}
-
-function mouseDragged() {
-  if (isDragging) {
-    panX = panStartX + (mouseX - dragStartX);
-    panY = panStartY + (mouseY - dragStartY);
-  }
-}
-
-function mouseReleased() {
-  isDragging = false;
 }
 
 /* ── LP Player ──────────────────────────────────────── */
 function updateLPPlayer(b) {
-  const record   = document.getElementById('lp-record');
-  const tonearm  = document.getElementById('lp-tonearm');
-  const art      = document.getElementById('lp-album-art');
-  const led      = document.getElementById('lp-led');
-  const idleMsg  = document.getElementById('lp-idle-msg');
+  const record = document.getElementById('lp-record');
+  const tonearm = document.getElementById('lp-tonearm');
+  const art = document.getElementById('lp-album-art');
+  const led = document.getElementById('lp-led');
+  const idleMsg = document.getElementById('lp-idle-msg');
   const songInfo = document.getElementById('lp-song-info');
 
   if (!b) {
@@ -285,13 +481,20 @@ function updateLPPlayer(b) {
   }
 
   // Text info
-  document.getElementById('lp-month').textContent  = b.month;
-  document.getElementById('lp-title').textContent  = b.title;
+  document.getElementById('lp-month').textContent = b.month;
+  document.getElementById('lp-title').textContent = b.title;
   document.getElementById('lp-artist').textContent = b.artist || '';
-  document.getElementById('lp-plays').textContent  = `${b.plays}회 재생`;
+  document.getElementById('lp-plays').textContent = `${b.plays}회 재생`;
+  
+  // Show genre if available
+  const genreEl = document.getElementById('lp-genre');
+  if (genreEl) {
+    genreEl.textContent = b.genre || '';
+    genreEl.style.display = b.genre ? 'inline' : 'none';
+  }
 
   const ytBtn = document.getElementById('lp-yt-btn');
-  ytBtn.href         = b.youtubeUrl || '#';
+  ytBtn.href = b.youtubeUrl || '#';
   ytBtn.style.display = b.youtubeUrl ? 'inline-flex' : 'none';
 
   idleMsg.classList.add('hidden');
