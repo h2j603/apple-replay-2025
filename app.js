@@ -102,9 +102,13 @@ function buildGenreConnections() {
   genreConnections = [];
   for (let i = 0; i < bubbles.length; i++) {
     for (let j = i + 1; j < bubbles.length; j++) {
-      // Only connect if both have genre and it's the same
-      if (bubbles[i].genre && bubbles[j].genre && bubbles[i].genre === bubbles[j].genre) {
-        genreConnections.push({ a: bubbles[i], b: bubbles[j], type: 'genre' });
+      // Extract first genre (before comma) for comparison
+      const genreA = bubbles[i].genre ? bubbles[i].genre.split(',')[0].trim() : null;
+      const genreB = bubbles[j].genre ? bubbles[j].genre.split(',')[0].trim() : null;
+      
+      // Only connect if both have genre and the first genre matches
+      if (genreA && genreB && genreA === genreB) {
+        genreConnections.push({ a: bubbles[i], b: bubbles[j], type: 'genre', genre: genreA });
       }
     }
   }
@@ -234,9 +238,12 @@ function draw() {
   
   bubbles.forEach(b => {
     const isHov = b === hoveredBubble;
+    // Extract first genre for comparison
+    const bGenre = b.genre ? b.genre.split(',')[0].trim() : null;
+    const hGenre = hoveredBubble && hoveredBubble.genre ? hoveredBubble.genre.split(',')[0].trim() : null;
     const isCon = hoveredBubble && (
       (showArtistConnections && b.artist === hoveredBubble.artist) ||
-      (showGenreConnections && b.genre && hoveredBubble.genre && b.genre === hoveredBubble.genre)
+      (showGenreConnections && bGenre && hGenre && bGenre === hGenre)
     ) && !isHov;
     drawBubble(b, isHov, isCon);
   });
@@ -324,8 +331,10 @@ function drawConnections() {
   // Draw genre connections
   if (showGenreConnections) {
     const genreColor = color('rgba(252, 79, 5, 0.8)'); // Orange for genre
-    genreConnections.forEach(({ a, b }) => {
-      const active = hoveredBubble && a.genre && a.genre === hoveredBubble.genre;
+    genreConnections.forEach(({ a, b, genre }) => {
+      // Extract first genre for comparison with hovered bubble
+      const hoveredGenre = hoveredBubble && hoveredBubble.genre ? hoveredBubble.genre.split(',')[0].trim() : null;
+      const active = hoveredGenre && genre === hoveredGenre;
       if (active) {
         stroke(252, 79, 5, 180); strokeWeight(1.5 / zoomLevel);
         drawingContext.setLineDash([]);
