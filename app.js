@@ -37,18 +37,15 @@ let repulsionActive = false;
 let repulsionTarget = null;
 
 // ══════════════════════════════════════════════════════
-// 3D LP PLAYER VARIABLES (DEPRECATED - Using 2D instead)
+// 3D LP PLAYER VARIABLES
 // ══════════════════════════════════════════════════════
 
-// let lp3d; // 3D LP player sketch - REMOVED
+let lp3d;
 let currentTrack = null;
 let isPlaying = false;
 let rotationAngle = 0;
-
-// Simple 2D LP player
-let lpCanvas;
-let lpCtx;
-let lpContainerW, lpContainerH;
+let targetRotation = 0;
+let tonearmAngle = 35;
 
 // ══════════════════════════════════════════════════════
 // PRELOAD
@@ -100,221 +97,200 @@ function setup() {
 }
 
 // ══════════════════════════════════════════════════════
-// 2D LP PLAYER - SIMPLE IMPLEMENTATION
+// 3D LP PLAYER - WEBGL IMPLEMENTATION
 // ══════════════════════════════════════════════════════
 
+let lp3dSketch;
+let lpGraphics; // For label texture
+
 function initLP3D() {
-  // Create simple 2D LP player
   const container = document.getElementById('lp-canvas-container');
-  lpContainerW = container.offsetWidth;
-  lpContainerH = container.offsetHeight;
   
-  lpCanvas = document.createElement('canvas');
-  lpCanvas.width = lpContainerW;
-  lpCanvas.height = lpContainerH;
-  container.appendChild(lpCanvas);
-  
-  lpCtx = lpCanvas.getContext('2d');
-  
-  // Add click listener
-  lpCanvas.addEventListener('click', () => {
-    toggleLPPlay();
-  });
-  
-  // Start animation loop
-  animateLP();
+  // Create p5.js WEBGL instance
+  lp3dSketch = new p5((p) => {
+    p.setup = function() {
+      const canvas = p.createCanvas(container.offsetWidth, container.offsetHeight, p.WEBGL);
+      canvas.parent('lp-canvas-container');
+      p.angleMode(p.DEGREES);
+      p.imageMode(p.CENTER);
+      
+      // Create graphics buffer for label texture
+      lpGraphics = p.createGraphics(256, 256);
+      
+      // Add click listener to canvas
+      canvas.elt.addEventListener('click', () => {
+        toggleLPPlay();
+      });
+    };
+    
+    p.draw = function() {
+      p.background(255, 69, 0); // #FF4500 background
+      
+      // Calculate LP size
+      const lpRadius = Math.min(p.width, p.height) * 0.32;
+      const labelRadius = lpRadius * 0.35;
+      
+      // Update rotation
+      if (isPlaying) {
+        rotationAngle += 2.5;
+      }
+      
+      // Smooth tonearm animation
+      const targetArmAngle = isPlaying ? -25 : 35;
+      tonearmAngle = p.lerp(tonearmAngle, targetArmAngle, 0.1);
+      
+      // Lighting
+      p.ambientLight(100);
+      p.directionalLight(255, 255, 255, 0.5, 0.5, -1);
+      p.pointLight(200, 200, 200, 0, -200, 200);
+      
+      // Camera position
+      p.camera(0, -lpRadius * 1.2, lpRadius * 2.5, 0, 0, 0, 0, 1, 0);
+      
+      // Draw turntable base (platter)
+      p.push();
+      p.translate(0, lpRadius * 0.15, 0);
+      p.rotateX(90);
+      p.noStroke();
+      p.fill(30);
+      p.ellipse(0, 0, lpRadius * 2.5, lpRadius * 2.5);
+      p.pop();
+      
+      // Draw LP record
+      p.push();
+      p.rotateX(90);
+      p.rotateZ(rotationAngle);
+      
+      // Main vinyl disc
+      p.noStroke();
+      p.fill(10);
+      p.ellipse(0, 0, lpRadius * 2, lpRadius * 2);
+      
+      // Groove rings
+      p.stroke(40);
+      p.noFill();
+      for (let r = labelRadius + 10; r < lpRadius * 0.95; r += 3) {
+        p.strokeWeight(0.5);
+        p.ellipse(0, 0, r * 2, r * 2);
+      }
+      
+      // Outer edge highlight
+      p.stroke(80);
+      p.strokeWeight(2);
+      p.ellipse(0, 0, lpRadius * 2, lpRadius * 2);
+      
+      // Draw label (album cover)
+      p.push();
+      // Update label texture with album cover
+      updateLabelTexture(p, labelRadius);
+      
+      // Apply label texture
+      p.texture(lpGraphics);
+      p.noStroke();
+      p.ellipse(0, 0, labelRadius * 2, labelRadius * 2);
+      
+      // Center hole
+      p.fill(255, 69, 0); // Orange
+      p.ellipse(0, 0, 10, 10);
+      
+      // Center spindle
+      p.fill(60);
+      p.ellipse(0, 0, 6, 6);
+      
+      p.pop();
+      p.pop();
+      
+      // Draw tonearm
+      drawTonearm3D(p, lpRadius);
+    };
+    
+    p.windowResized = function() {
+      p.resizeCanvas(container.offsetWidth, container.offsetHeight);
+    };
+  }, 'lp-3d-canvas');
 }
 
-function animateLP() {
-  if (!lpCtx) return;
+function updateLabelTexture(p, labelRadius) {
+  lpGraphics.background(30);
+  lpGraphics.noStroke();
   
-  const ctx = lpCtx;
-  const w = lpCanvas.width;
-  const h = lpCanvas.height;
-  const cx = w / 2;
-  const cy = h / 2 - 20;
-  
-  // Clear
-  ctx.clearRect(0, 0, w, h);
-  
-  // Calculate sizes
-  const lpRadius = Math.min(w, h) * 0.38;
-  const labelRadius = lpRadius * 0.35;
-  
-  // Update rotation
-  if (isPlaying) {
-    rotationAngle += 2.5;
-  }
-  
-  // Draw turntable base (platter)
-  ctx.fillStyle = '#1a1a1a';
-  ctx.beginPath();
-  ctx.ellipse(cx, cy, lpRadius * 1.25, lpRadius * 1.25 * 0.3, 0, 0, Math.PI * 2);
-  ctx.fill();
-  
-  // Draw LP (rotated)
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(rotationAngle * Math.PI / 180);
-  
-  // Main LP body (black vinyl)
-  ctx.fillStyle = '#0a0a0a';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, lpRadius, lpRadius, 0, 0, Math.PI * 2);
-  ctx.fill();
-  
-  // Groove effect (concentric circles)
-  ctx.strokeStyle = 'rgba(30, 30, 30, 0.6)';
-  ctx.lineWidth = 0.5;
-  for (let r = labelRadius + 8; r < lpRadius - 3; r += 2) {
-    ctx.beginPath();
-    ctx.ellipse(0, 0, r, r, 0, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  
-  // Outer edge highlight
-  ctx.strokeStyle = 'rgba(60, 60, 60, 0.4)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.ellipse(0, 0, lpRadius, lpRadius, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  
-  // Label (center) - album cover
   if (currentTrack && currentTrack.coverUrl && images[currentTrack.imgKey]) {
+    // Draw album cover image
     const img = images[currentTrack.imgKey];
-    
-    // Create circular clip for label
-    ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(0, 0, labelRadius, labelRadius, 0, 0, Math.PI * 2);
-    ctx.clip();
-    
-    // Draw image
-    ctx.drawImage(img, -labelRadius, -labelRadius, labelRadius * 2, labelRadius * 2);
-    ctx.restore();
-    
-    // Add subtle border
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, labelRadius, labelRadius, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    lpGraphics.image(img, 0, 0, labelRadius * 2, labelRadius * 2);
   } else {
     // Default label
-    ctx.fillStyle = '#222';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, labelRadius, labelRadius, 0, 0, Math.PI * 2);
-    ctx.fill();
+    lpGraphics.fill(34);
+    lpGraphics.ellipse(128, 128, 256, 256);
     
     // Label text
-    ctx.fillStyle = '#aaa';
-    ctx.font = '10px "ibm-plex-mono"';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('APPLESonic', 0, -5);
-    ctx.font = '8px "ibm-plex-mono"';
-    ctx.fillText('2025', 0, 10);
+    lpGraphics.fill(170);
+    lpGraphics.textAlign(lpGraphics.CENTER, lpGraphics.CENTER);
+    lpGraphics.textSize(20);
+    lpGraphics.text('APPLESonic', 128, 118);
+    lpGraphics.textSize(14);
+    lpGraphics.text('2025', 128, 145);
   }
   
-  // Center hole
-  ctx.fillStyle = '#FF4500'; // Orange background showing through
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 5, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.restore();
-  
-  // Draw tonearm (not rotating)
-  drawTonearm(ctx, cx, cy, lpRadius, isPlaying);
-  
-  // Apply halftone effect ONLY on LP black area (optional subtle effect)
-  if (isPlaying) {
-    applyHalftoneToLP(ctx, cx, cy, lpRadius);
-  }
-  
-  // Request next frame
-  requestAnimationFrame(animateLP);
+  // Add border
+  lpGraphics.noFill();
+  lpGraphics.stroke(255, 69, 0, 50);
+  lpGraphics.strokeWeight(2);
+  lpGraphics.ellipse(128, 128, 250, 250);
 }
 
-function drawTonearm(ctx, cx, cy, lpRadius, playing) {
-  const armAngle = playing ? -25 : 35;
-  const armX = cx + lpRadius * 0.85;
-  const armY = cy - lpRadius * 0.35;
+function drawTonearm3D(p, lpRadius) {
+  const armLength = lpRadius * 0.7;
+  const pivotX = lpRadius * 0.85;
+  const pivotY = -lpRadius * 0.35;
+  const pivotZ = 20;
   
-  ctx.save();
-  ctx.translate(armX, armY);
-  ctx.rotate(armAngle * Math.PI / 180);
+  p.push();
+  p.translate(pivotX, pivotY, pivotZ);
+  p.rotateZ(tonearmAngle);
   
-  // Arm base
-  ctx.fillStyle = '#2a2a2a';
-  ctx.beginPath();
-  ctx.arc(0, 0, 12, 0, Math.PI * 2);
-  ctx.fill();
+  // Arm base (pivot)
+  p.push();
+  p.noStroke();
+  p.fill(45);
+  p.sphere(15);
+  p.pop();
   
   // Arm tube
-  ctx.strokeStyle = '#404040';
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, -80);
-  ctx.stroke();
+  p.push();
+  p.stroke(70);
+  p.strokeWeight(6);
+  p.line(0, 0, 0, -armLength * 0.8);
+  p.pop();
   
   // Headshell
-  ctx.fillStyle = '#353535';
-  ctx.fillRect(-6, -95, 12, 18);
+  p.push();
+  p.translate(0, -armLength * 0.85);
+  p.noStroke();
+  p.fill(55);
+  p.box(12, 20, 10);
+  p.pop();
   
   // Cartridge
-  ctx.fillStyle = '#252525';
-  ctx.fillRect(-4, -108, 8, 12);
+  p.push();
+  p.translate(0, -armLength * 0.85 - 12);
+  p.fill(40);
+  p.box(8, 14, 8);
+  p.pop();
   
   // Stylus
-  ctx.fillStyle = '#606060';
-  ctx.beginPath();
-  ctx.moveTo(-2, -118);
-  ctx.lineTo(2, -118);
-  ctx.lineTo(0, -125);
-  ctx.closePath();
-  ctx.fill();
+  p.push();
+  p.translate(0, -armLength * 0.85 - 22);
+  p.fill(90);
+  p.cone(3, 10);
+  p.pop();
   
-  ctx.restore();
-}
-
-function applyHalftoneToLP(ctx, cx, cy, lpRadius) {
-  // Subtle halftone effect ONLY on LP vinyl area
-  const dotSize = 2;
-  const spacing = 5;
-  
-  ctx.save();
-  ctx.globalCompositeOperation = 'overlay';
-  ctx.globalAlpha = 0.08;
-  
-  for (let y = cy - lpRadius; y <= cy + lpRadius; y += spacing) {
-    for (let x = cx - lpRadius; x <= cx + lpRadius; x += spacing) {
-      const d = Math.sqrt((x - cx) ** 2 + ((y - cy) * 2) ** 2);
-      
-      if (d <= lpRadius * 0.92 && d > lpRadius * 0.38) {
-        // Pattern density varies with distance from center
-        const alpha = 0.3 + Math.sin(d * 0.1 + rotationAngle) * 0.2;
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(x, y, dotSize, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-  }
-  
-  ctx.restore();
+  p.pop();
 }
 
 // Window resize handler for LP
 function resizeLP() {
-  const container = document.getElementById('lp-canvas-container');
-  if (lpCanvas && container) {
-    lpContainerW = container.offsetWidth;
-    lpContainerH = container.offsetHeight;
-    lpCanvas.width = lpContainerW;
-    lpCanvas.height = lpContainerH;
-  }
+  // WEBGL canvas handles resize automatically via windowResized
 }
 
 // ══════════════════════════════════════════════════════
@@ -464,6 +440,9 @@ function buildGenreConnections() {
 function draw() {
   clear(); // Transparent background to show CSS grid
 
+  // Draw grid (scales with zoom)
+  drawGrid();
+
   // Apply zoom + pan
   translate(width / 2 + panX, height / 2 + panY);
   scale(zoomLevel);
@@ -507,6 +486,42 @@ function draw() {
 
   // Cursor
   document.body.style.cursor = hoveredBubble ? 'pointer' : 'default';
+}
+
+// ══════════════════════════════════════════════════════
+// DRAW GRID (Scales with zoom)
+// ══════════════════════════════════════════════════════
+
+function drawGrid() {
+  const gridSize = 40;
+  const gridColor = color(255, 69, 0); // #FF4500
+  
+  stroke(red(gridColor), green(gridColor), blue(gridColor), 80);
+  strokeWeight(1 / zoomLevel); // Keep line width constant on screen
+  
+  const step = gridSize * zoomLevel;
+  
+  // Calculate visible area
+  const startX = (-width / 2 - panX) / zoomLevel;
+  const startY = (-height / 2 - panY) / zoomLevel;
+  const endX = (width / 2 - panX) / zoomLevel;
+  const endY = (height / 2 - panY) / zoomLevel;
+  
+  // Snap to grid
+  const gridStartX = Math.floor(startX / gridSize) * gridSize;
+  const gridStartY = Math.floor(startY / gridSize) * gridSize;
+  
+  // Draw vertical lines
+  for (let x = gridStartX; x <= endX; x += gridSize) {
+    const screenX = x * zoomLevel + panX + width / 2;
+    line(screenX, 0, screenX, height);
+  }
+  
+  // Draw horizontal lines
+  for (let y = gridStartY; y <= endY; y += gridSize) {
+    const screenY = y * zoomLevel + panY + height / 2;
+    line(0, screenY, width, screenY);
+  }
 }
 
 // ══════════════════════════════════════════════════════
