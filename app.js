@@ -37,23 +37,18 @@ let repulsionActive = false;
 let repulsionTarget = null;
 
 // ══════════════════════════════════════════════════════
-// 3D LP PLAYER VARIABLES
+// 3D LP PLAYER VARIABLES (DEPRECATED - Using 2D instead)
 // ══════════════════════════════════════════════════════
 
-let lp3d; // 3D LP player sketch
+// let lp3d; // 3D LP player sketch - REMOVED
 let currentTrack = null;
 let isPlaying = false;
 let rotationAngle = 0;
-let targetRotation = 0;
-let tonearmAngle = 0;
-let tonearmTarget = 0;
-let currentCoverTexture = null;
-let coverTextureReady = false;
 
-// LP dimensions
-const LP_RADIUS = 180;
-const LP_THICKNESS = 12;
-const LABEL_RADIUS = 65;
+// Simple 2D LP player
+let lpCanvas;
+let lpCtx;
+let lpContainerW, lpContainerH;
 
 // ══════════════════════════════════════════════════════
 // PRELOAD
@@ -105,229 +100,221 @@ function setup() {
 }
 
 // ══════════════════════════════════════════════════════
-// 3D LP PLAYER - SEPARATE SKETCH
+// 2D LP PLAYER - SIMPLE IMPLEMENTATION
 // ══════════════════════════════════════════════════════
 
 function initLP3D() {
-  // Create 3D LP player as a separate p5 instance
-  lp3d = new p5((p) => {
-    let pg; // Graphics buffer for dithering
-    
-    p.setup = function() {
-      const container = document.getElementById('lp-canvas-container');
-      const canvas = p.createCanvas(container.offsetWidth, container.offsetHeight, p.WEBGL);
-      canvas.parent('lp-canvas-container');
-      
-      pg = p.createGraphics(container.offsetWidth, container.offsetHeight);
-      pg.colorMode(p.RGB);
-      pg.noStroke();
-      
-      p.angleMode(p.DEGREES);
-      p.imageMode(p.CENTER);
-    };
-    
-    p.draw = function() {
-      p.clear();
-      p.background(255, 69, 0); // Orange-red background
-      
-      // Center the scene
-      p.translate(0, 0, 0);
-      
-      // Mouse interaction for LP rotation
-      let lpClicked = false;
-      if (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height) {
-        const centerX = p.width / 2;
-        const centerY = p.height / 2;
-        const d = p.dist(p.mouseX, p.mouseY, centerX, centerY);
-        
-        if (d < LP_RADIUS * 1.2 && p.mouseIsPressed) {
-          lpClicked = true;
-        }
-      }
-      
-      // Toggle play on click
-      if (lpClicked && !p._clicked) {
-        p._clicked = true;
-        toggleLPPlay();
-      } else if (!lpClicked) {
-        p._clicked = false;
-      }
-      
-      // Smooth rotation
-      if (isPlaying) {
-        rotationAngle += 2.5;
-        tonearmTarget = -25;
-      } else {
-        tonearmTarget = 35;
-      }
-      
-      tonearmAngle = p.lerp(tonearmAngle, tonearmTarget, 0.08);
-      
-      // Draw turntable base (platter)
-      p.push();
-      p.fill(25);
-      p.noStroke();
-      p.rotateX(90);
-      p.ellipse(0, 0, LP_RADIUS * 2.4, LP_RADIUS * 2.4);
-      p.pop();
-      
-      // Draw LP record
-      p.push();
-      p.translate(0, 0, 0);
-      
-      // Main LP body (black vinyl)
-      p.noStroke();
-      p.fill(15);
-      p.rotateX(90);
-      
-      // Create LP with grooves using cylinder
-      p.cylinder(LP_RADIUS, LP_THICKNESS);
-      
-      // Top surface with grooves effect
-      p.push();
-      p.translate(0, 0, LP_THICKNESS / 2);
-      
-      // Outer edge (dark)
-      p.fill(8);
-      p.ellipse(0, 0, LP_RADIUS * 2, LP_RADIUS * 2);
-      
-      // Groove area
-      for (let r = LABEL_RADIUS + 10; r < LP_RADIUS - 5; r += 3) {
-        p.fill(20 + p.sin(r) * 5);
-        p.ellipse(0, 0, r * 2, r * 2);
-      }
-      
-      // Label area (center)
-      if (currentCoverTexture && coverTextureReady) {
-        p.push();
-        p.texture(currentCoverTexture);
-        p.ellipse(0, 0, LABEL_RADIUS * 2, LABEL_RADIUS * 2);
-        p.pop();
-      } else {
-        p.fill(35);
-        p.ellipse(0, 0, LABEL_RADIUS * 2, LABEL_RADIUS * 2);
-        
-        // Label text
-        p.push();
-        p.fill(180);
-        p.textSize(10);
-        p.textAlign(p.CENTER, p.CENTER);
-        p.translate(0, 0, 1);
-        p.text('APPLESonic', 0, -8);
-        p.textSize(8);
-        p.text('2025', 0, 8);
-        p.pop();
-      }
-      
-      // Center hole
-      p.push();
-      p.fill(255, 69, 0); // Orange background showing through
-      p.translate(0, 0, LP_THICKNESS / 2 + 1);
-      p.ellipse(0, 0, 8, 8);
-      p.pop();
-      
-      p.pop(); // End top surface
-      p.pop(); // End LP
-      
-      // Draw tonearm
-      p.push();
-      p.translate(LP_RADIUS * 0.95, -LP_RADIUS * 0.3, 40);
-      p.rotateZ(tonearmAngle);
-      
-      // Arm base
-      p.fill(40);
-      p.noStroke();
-      p.sphere(18);
-      
-      // Arm tube
-      p.push();
-      p.translate(0, 0, 0);
-      p.rotateX(90);
-      p.fill(60);
-      p.cylinder(4, 120);
-      p.pop();
-      
-      // Headshell
-      p.push();
-      p.translate(0, -60, 0);
-      p.rotateX(90);
-      p.fill(50);
-      p.box(12, 20, 8);
-      p.pop();
-      
-      // Cartridge
-      p.push();
-      p.translate(0, -72, 0);
-      p.rotateX(90);
-      p.fill(30);
-      p.box(8, 14, 6);
-      p.pop();
-      
-      // Stylus
-      p.push();
-      p.translate(0, -80, 0);
-      p.rotateX(90);
-      p.fill(80);
-      p.cone(2, 8);
-      p.pop();
-      
-      p.pop(); // End tonearm
-      
-      // Apply dithering effect to the entire LP player
-      applyDithering(p);
-    };
-    
-    function applyDithering(p) {
-      // Create halftone/dither pattern - ONLY on LP area
-      pg.clear();
-      
-      // Draw halftone dots only on LP area
-      const dotSize = 3;
-      const spacing = 6;
-      
-      pg.background(255, 69, 0, 0);
-      
-      const centerX = pg.width / 2;
-      const centerY = pg.height / 2;
-      
-      // Only apply to LP circle area (radius = LP_RADIUS * 1.1)
-      const lpAreaRadius = LP_RADIUS * 1.1;
-      
-      for (let y = centerY - lpAreaRadius; y <= centerY + lpAreaRadius; y += spacing) {
-        for (let x = centerX - lpAreaRadius; x <= centerX + lpAreaRadius; x += spacing) {
-          // Only draw dots inside the LP circle
-          const d = p.dist(x, y, centerX, centerY);
-          
-          if (d <= lpAreaRadius) {
-            // Pattern density based on distance from center
-            let alpha = p.map(d, 0, lpAreaRadius, 180, 60);
-            
-            // Add some noise for organic feel
-            if (p.random() < 0.2) {
-              alpha *= 0.8;
-            }
-            
-            pg.fill(0, alpha);
-            pg.noStroke();
-            pg.ellipse(x, y, dotSize, dotSize);
-          }
-        }
-      }
-      
-      // Overlay the dither pattern
-      p.push();
-      p.resetMatrix();
-      p.translate(0, 0, 100); // On top
-      p.image(pg, 0, 0);
-      p.pop();
-    }
-    
-    p.windowResized = function() {
-      const container = document.getElementById('lp-canvas-container');
-      p.resizeCanvas(container.offsetWidth, container.offsetHeight);
-      pg = p.createGraphics(container.offsetWidth, container.offsetHeight);
-    };
+  // Create simple 2D LP player
+  const container = document.getElementById('lp-canvas-container');
+  lpContainerW = container.offsetWidth;
+  lpContainerH = container.offsetHeight;
+  
+  lpCanvas = document.createElement('canvas');
+  lpCanvas.width = lpContainerW;
+  lpCanvas.height = lpContainerH;
+  container.appendChild(lpCanvas);
+  
+  lpCtx = lpCanvas.getContext('2d');
+  
+  // Add click listener
+  lpCanvas.addEventListener('click', () => {
+    toggleLPPlay();
   });
+  
+  // Start animation loop
+  animateLP();
+}
+
+function animateLP() {
+  if (!lpCtx) return;
+  
+  const ctx = lpCtx;
+  const w = lpCanvas.width;
+  const h = lpCanvas.height;
+  const cx = w / 2;
+  const cy = h / 2 - 20;
+  
+  // Clear
+  ctx.clearRect(0, 0, w, h);
+  
+  // Calculate sizes
+  const lpRadius = Math.min(w, h) * 0.38;
+  const labelRadius = lpRadius * 0.35;
+  
+  // Update rotation
+  if (isPlaying) {
+    rotationAngle += 2.5;
+  }
+  
+  // Draw turntable base (platter)
+  ctx.fillStyle = '#1a1a1a';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, lpRadius * 1.25, lpRadius * 1.25 * 0.3, 0, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Draw LP (rotated)
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rotationAngle * Math.PI / 180);
+  
+  // Main LP body (black vinyl)
+  ctx.fillStyle = '#0a0a0a';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, lpRadius, lpRadius, 0, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Groove effect (concentric circles)
+  ctx.strokeStyle = 'rgba(30, 30, 30, 0.6)';
+  ctx.lineWidth = 0.5;
+  for (let r = labelRadius + 8; r < lpRadius - 3; r += 2) {
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r, r, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  
+  // Outer edge highlight
+  ctx.strokeStyle = 'rgba(60, 60, 60, 0.4)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, lpRadius, lpRadius, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  
+  // Label (center) - album cover
+  if (currentTrack && currentTrack.coverUrl && images[currentTrack.imgKey]) {
+    const img = images[currentTrack.imgKey];
+    
+    // Create circular clip for label
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(0, 0, labelRadius, labelRadius, 0, 0, Math.PI * 2);
+    ctx.clip();
+    
+    // Draw image
+    ctx.drawImage(img, -labelRadius, -labelRadius, labelRadius * 2, labelRadius * 2);
+    ctx.restore();
+    
+    // Add subtle border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, labelRadius, labelRadius, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  } else {
+    // Default label
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, labelRadius, labelRadius, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Label text
+    ctx.fillStyle = '#aaa';
+    ctx.font = '10px "ibm-plex-mono"';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('APPLESonic', 0, -5);
+    ctx.font = '8px "ibm-plex-mono"';
+    ctx.fillText('2025', 0, 10);
+  }
+  
+  // Center hole
+  ctx.fillStyle = '#FF4500'; // Orange background showing through
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 5, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.restore();
+  
+  // Draw tonearm (not rotating)
+  drawTonearm(ctx, cx, cy, lpRadius, isPlaying);
+  
+  // Apply halftone effect ONLY on LP black area (optional subtle effect)
+  if (isPlaying) {
+    applyHalftoneToLP(ctx, cx, cy, lpRadius);
+  }
+  
+  // Request next frame
+  requestAnimationFrame(animateLP);
+}
+
+function drawTonearm(ctx, cx, cy, lpRadius, playing) {
+  const armAngle = playing ? -25 : 35;
+  const armX = cx + lpRadius * 0.85;
+  const armY = cy - lpRadius * 0.35;
+  
+  ctx.save();
+  ctx.translate(armX, armY);
+  ctx.rotate(armAngle * Math.PI / 180);
+  
+  // Arm base
+  ctx.fillStyle = '#2a2a2a';
+  ctx.beginPath();
+  ctx.arc(0, 0, 12, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Arm tube
+  ctx.strokeStyle = '#404040';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, -80);
+  ctx.stroke();
+  
+  // Headshell
+  ctx.fillStyle = '#353535';
+  ctx.fillRect(-6, -95, 12, 18);
+  
+  // Cartridge
+  ctx.fillStyle = '#252525';
+  ctx.fillRect(-4, -108, 8, 12);
+  
+  // Stylus
+  ctx.fillStyle = '#606060';
+  ctx.beginPath();
+  ctx.moveTo(-2, -118);
+  ctx.lineTo(2, -118);
+  ctx.lineTo(0, -125);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.restore();
+}
+
+function applyHalftoneToLP(ctx, cx, cy, lpRadius) {
+  // Subtle halftone effect ONLY on LP vinyl area
+  const dotSize = 2;
+  const spacing = 5;
+  
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.globalAlpha = 0.08;
+  
+  for (let y = cy - lpRadius; y <= cy + lpRadius; y += spacing) {
+    for (let x = cx - lpRadius; x <= cx + lpRadius; x += spacing) {
+      const d = Math.sqrt((x - cx) ** 2 + ((y - cy) * 2) ** 2);
+      
+      if (d <= lpRadius * 0.92 && d > lpRadius * 0.38) {
+        // Pattern density varies with distance from center
+        const alpha = 0.3 + Math.sin(d * 0.1 + rotationAngle) * 0.2;
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(x, y, dotSize, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+  
+  ctx.restore();
+}
+
+// Window resize handler for LP
+function resizeLP() {
+  const container = document.getElementById('lp-canvas-container');
+  if (lpCanvas && container) {
+    lpContainerW = container.offsetWidth;
+    lpContainerH = container.offsetHeight;
+    lpCanvas.width = lpContainerW;
+    lpCanvas.height = lpContainerH;
+  }
 }
 
 // ══════════════════════════════════════════════════════
@@ -358,20 +345,6 @@ function toggleLPPlay() {
 
 function selectTrack(b) {
   currentTrack = b;
-  
-  // Load cover texture
-  coverTextureReady = false;
-  if (b.coverUrl && images[b.imgKey]) {
-    const img = images[b.imgKey];
-    // Create texture from image for 3D LP
-    if (lp3d) {
-      currentCoverTexture = lp3d.createGraphics(256, 256);
-      currentCoverTexture.image(img, 0, 0, 256, 256);
-      coverTextureReady = true;
-    }
-  } else {
-    currentCoverTexture = null;
-  }
   
   // Start playing
   isPlaying = true;
@@ -791,6 +764,9 @@ function windowResized() {
   const panel = document.getElementById('map-panel');
   resizeCanvas(panel.offsetWidth, panel.offsetHeight);
   arrangeSpiral();
+  
+  // Resize LP canvas
+  resizeLP();
 }
 
 // ══════════════════════════════════════════════════════
