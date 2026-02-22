@@ -34,6 +34,24 @@
       flex-direction: row;
       width: 100vw;
       height: 100vh;
+      position: relative;
+    }
+
+    /* CENTERED TITLE */
+    .center-title {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 100;
+      pointer-events: none;
+    }
+    .center-title h1 {
+      font-family: 'Hauser', serif;
+      font-size: 3rem;
+      color: black;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
     }
 
     /* LEFT: MAP */
@@ -79,9 +97,7 @@
 
     /* DIVIDER */
     #divider {
-      width: 1px; height: 100%;
-      background: rgba(255,255,255,0.07);
-      flex-shrink: 0;
+      display: none;
     }
 
     /* ── RIGHT: LP PANEL ─────────────────────────────── */
@@ -102,8 +118,8 @@
     #three-lp-container {
       position: relative;
       z-index: 1;
-      width: 320px;
-      height: 320px;
+      width: 480px;
+      height: 480px;
     }
 
     /* LED indicator */
@@ -277,9 +293,9 @@
     @media (max-width: 768px) {
       #app { flex-direction: column; }
       #map-panel { width: 100%; height: 50%; }
-      #divider { width: 100%; height: 1px; }
+      #divider { display: none; }
       #lp-panel { width: 100%; height: 50%; }
-      #three-lp-container { width: 200px; height: 200px; }
+      #three-lp-container { width: 300px; height: 300px; }
       .lp-info { width: 200px; padding-top: 14px; }
       .lp-title { font-size: 0.9rem; }
     }
@@ -288,12 +304,13 @@
 <body>
 <div id="app">
 
+  <!-- CENTERED TITLE -->
+  <div class="center-title">
+    <h1>HYUK 2025 Music Map</h1>
+  </div>
+
   <!-- LEFT: MAP -->
   <div id="map-panel">
-    <div class="map-header">
-      <h1>2025</h1>
-      <p>Music Map</p>
-    </div>
     <div class="map-zoom-hint">스크롤로 확대 · 클릭으로 선택</div>
   </div>
 
@@ -301,9 +318,6 @@
 
   <!-- RIGHT: LP PLAYER -->
   <div id="lp-panel">
-    <div class="lp-led" id="lp-led"></div>
-    <div class="lp-brand">Replay–01</div>
-    
     <!-- Three.js LP Player Container -->
     <div id="three-lp-container"></div>
     

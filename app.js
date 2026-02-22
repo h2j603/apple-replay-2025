@@ -166,10 +166,15 @@ function initThreeLP() {
   threeCamera.lookAt(0, -0.2, 0);
   
   // Renderer
-  threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, antialias: true });
   threeRenderer.setSize(width, height);
-  threeRenderer.setPixelRatio(window.devicePixelRatio);
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 3));
   threeRenderer.setClearColor(0x000000, 0);
+  threeRenderer.shadowMap.enabled = true;
+  threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+  threeRenderer.toneMappingExposure = 1.0;
+  threeRenderer.outputEncoding = THREE.sRGBEncoding;
   container.appendChild(threeRenderer.domElement);
   
   // ── LIGHTING ─────────────────────────────────────────
@@ -251,12 +256,12 @@ function initThreeLP() {
   
   // Create canvas for vinyl texture with grooves
   const vinylCanvas = document.createElement('canvas');
-  vinylCanvas.width = 512;
-  vinylCanvas.height = 512;
+  vinylCanvas.width = 1024;
+  vinylCanvas.height = 1024;
   const vCtx = vinylCanvas.getContext('2d');
   
-  // Draw vinyl grooves
-  const gradient = vCtx.createRadialGradient(256, 256, 50, 256, 256, 250);
+  // Draw vinyl grooves with dithering effect
+  const gradient = vCtx.createRadialGradient(512, 512, 100, 512, 512, 500);
   gradient.addColorStop(0, '#0d0d0d');
   gradient.addColorStop(0.3, '#1a1a1a');
   gradient.addColorStop(0.31, '#0d0d0d');
@@ -268,17 +273,29 @@ function initThreeLP() {
   gradient.addColorStop(0.56, '#0d0d0d');
   gradient.addColorStop(1, '#111111');
   vCtx.fillStyle = gradient;
-  vCtx.fillRect(0, 0, 512, 512);
+  vCtx.fillRect(0, 0, 1024, 1024);
+  
+  // Add dithering noise for analog feel
+  for (let i = 0; i < 80000; i++) {
+    const x = Math.random() * 1024;
+    const y = Math.random() * 1024;
+    const dist = Math.sqrt((x - 512) ** 2 + (y - 512) ** 2);
+    if (dist > 100 && dist < 500) {
+      const alpha = Math.random() * 0.15;
+      vCtx.fillStyle = `rgba(${Math.random() > 0.5 ? 255 : 0}, ${Math.random() > 0.5 ? 255 : 0}, ${Math.random() > 0.5 ? 255 : 0}, ${alpha})`;
+      vCtx.fillRect(x, y, 1, 1);
+    }
+  }
   
   // Add subtle shine
-  const shineGradient = vCtx.createConicGradient(0, 256, 256);
+  const shineGradient = vCtx.createConicGradient(0, 512, 512);
   shineGradient.addColorStop(0, 'rgba(255,255,255,0.02)');
   shineGradient.addColorStop(0.25, 'rgba(255,255,255,0.01)');
   shineGradient.addColorStop(0.5, 'rgba(255,255,255,0.02)');
   shineGradient.addColorStop(0.75, 'rgba(255,255,255,0.01)');
   shineGradient.addColorStop(1, 'rgba(255,255,255,0.02)');
   vCtx.fillStyle = shineGradient;
-  vCtx.fillRect(0, 0, 512, 512);
+  vCtx.fillRect(0, 0, 1024, 1024);
   
   const vinylTexture = new THREE.CanvasTexture(vinylCanvas);
   const vinylMat = new THREE.MeshStandardMaterial({
@@ -428,24 +445,24 @@ function createTonearm() {
 /* ── CREATE LABEL TEXTURE ─────────────────────────────── */
 function createLabelTexture(coverUrl) {
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
+  canvas.width = 512;
+  canvas.height = 512;
   const ctx = canvas.getContext('2d');
   
   // Default label background
   ctx.fillStyle = '#1a1a18';
-  ctx.fillRect(0, 0, 256, 256);
+  ctx.fillRect(0, 0, 512, 512);
   
   // Center circle
   ctx.beginPath();
-  ctx.arc(128, 128, 120, 0, Math.PI * 2);
+  ctx.arc(256, 256, 240, 0, Math.PI * 2);
   ctx.strokeStyle = 'rgba(255,255,255,0.1)';
   ctx.lineWidth = 2;
   ctx.stroke();
   
   // Inner circle
   ctx.beginPath();
-  ctx.arc(128, 128, 20, 0, Math.PI * 2);
+  ctx.arc(256, 256, 40, 0, Math.PI * 2);
   ctx.strokeStyle = 'rgba(255,255,255,0.15)';
   ctx.lineWidth = 1;
   ctx.stroke();
@@ -457,9 +474,9 @@ function createLabelTexture(coverUrl) {
     img.onload = () => {
       ctx.save();
       ctx.beginPath();
-      ctx.arc(128, 128, 115, 0, Math.PI * 2);
+      ctx.arc(256, 256, 230, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(img, 0, 0, 230, 230);
+      ctx.drawImage(img, 0, 0, 460, 460);
       ctx.restore();
       
       // Update texture
@@ -472,11 +489,11 @@ function createLabelTexture(coverUrl) {
   } else {
     // Show placeholder
     ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.font = 'bold 24px sans-serif';
+    ctx.font = 'bold 48px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('APPLE', 128, 130);
-    ctx.font = '14px sans-serif';
-    ctx.fillText('REPLAY', 128, 155);
+    ctx.fillText('APPLE', 256, 260);
+    ctx.font = '28px sans-serif';
+    ctx.fillText('REPLAY', 256, 310);
   }
   
   // Create/update texture
