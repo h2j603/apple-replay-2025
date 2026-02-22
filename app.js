@@ -278,36 +278,35 @@ function initLP3D() {
     };
     
     function applyDithering(p) {
-      // Create halftone/dither pattern
+      // Create halftone/dither pattern - ONLY on LP area
       pg.clear();
       
-      // Draw halftone dots on the entire canvas
+      // Draw halftone dots only on LP area
       const dotSize = 3;
       const spacing = 6;
       
       pg.background(255, 69, 0, 0);
       
-      for (let y = 0; y < pg.height; y += spacing) {
-        for (let x = 0; x < pg.width; x += spacing) {
-          // Calculate brightness based on position (center is darker)
-          const cx = pg.width / 2;
-          const cy = pg.height / 2;
-          const d = p.dist(x, y, cx, cy);
+      const centerX = pg.width / 2;
+      const centerY = pg.height / 2;
+      
+      // Only apply to LP circle area (radius = LP_RADIUS * 1.1)
+      const lpAreaRadius = LP_RADIUS * 1.1;
+      
+      for (let y = centerY - lpAreaRadius; y <= centerY + lpAreaRadius; y += spacing) {
+        for (let x = centerX - lpAreaRadius; x <= centerX + lpAreaRadius; x += spacing) {
+          // Only draw dots inside the LP circle
+          const d = p.dist(x, y, centerX, centerY);
           
-          // Pattern density based on distance from center
-          let alpha = 0;
-          if (d < LP_RADIUS * 1.5) {
-            alpha = p.map(d, 0, LP_RADIUS * 1.5, 180, 40);
-          } else {
-            alpha = p.map(d, LP_RADIUS * 1.5, p.max(pg.width, pg.height), 40, 0);
-          }
-          
-          // Add some noise for organic feel
-          if (p.random() < 0.3) {
-            alpha *= 0.7;
-          }
-          
-          if (alpha > 20) {
+          if (d <= lpAreaRadius) {
+            // Pattern density based on distance from center
+            let alpha = p.map(d, 0, lpAreaRadius, 180, 60);
+            
+            // Add some noise for organic feel
+            if (p.random() < 0.2) {
+              alpha *= 0.8;
+            }
+            
             pg.fill(0, alpha);
             pg.noStroke();
             pg.ellipse(x, y, dotSize, dotSize);
