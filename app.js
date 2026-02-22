@@ -838,10 +838,15 @@ function updateLPPlayer(b) {
   }
 
   // Text info
-  document.getElementById('lp-month').textContent = b.month;
-  document.getElementById('lp-title').textContent = b.title;
-  document.getElementById('lp-artist').textContent = b.artist || '';
-  document.getElementById('lp-plays').textContent = `${b.plays}회 재생`;
+  const monthEl = document.getElementById('lp-month');
+  const titleEl = document.getElementById('lp-title');
+  const artistEl = document.getElementById('lp-artist');
+  const playsEl = document.getElementById('lp-plays');
+  
+  if (monthEl) monthEl.textContent = b.month;
+  if (titleEl) titleEl.textContent = b.title;
+  if (artistEl) artistEl.textContent = b.artist || '';
+  if (playsEl) playsEl.textContent = `${b.plays}회 재생`;
   
   // Show genre if available
   const genreEl = document.getElementById('lp-genre');
@@ -851,11 +856,13 @@ function updateLPPlayer(b) {
   }
 
   const ytBtn = document.getElementById('lp-yt-btn');
-  ytBtn.href = b.youtubeUrl || '#';
-  ytBtn.style.display = b.youtubeUrl ? 'inline-flex' : 'none';
+  if (ytBtn) {
+    ytBtn.href = b.youtubeUrl || '#';
+    ytBtn.style.display = b.youtubeUrl ? 'inline-flex' : 'none';
+  }
 
-  idleMsg.classList.add('hidden');
-  songInfo.classList.add('visible');
+  if (idleMsg) idleMsg.classList.add('hidden');
+  if (songInfo) songInfo.classList.add('visible');
 }
 
 /* ── Resize ─────────────────────────────────────────── */
