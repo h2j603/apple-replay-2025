@@ -589,7 +589,7 @@ function createConnectionToggles() {
 
 /* ── Draw ───────────────────────────────────────────── */
 function draw() {
-  background(42);
+  background(211);
 
   // Apply zoom + pan (no drag)
   translate(width / 2 + panX, height / 2 + panY);
