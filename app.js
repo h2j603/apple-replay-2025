@@ -97,7 +97,7 @@ function setup() {
 }
 
 // ══════════════════════════════════════════════════════
-// 3D LP PLAYER - WEBGL IMPLEMENTATION
+// 3D LP PLAYER - WEBGL IMPLEMENTATION (ENHANCED)
 // ══════════════════════════════════════════════════════
 
 let lp3dSketch;
@@ -113,9 +113,10 @@ function initLP3D() {
       canvas.parent('lp-canvas-container');
       p.angleMode(p.DEGREES);
       p.imageMode(p.CENTER);
+      p.noStroke();
       
       // Create graphics buffer for label texture
-      lpGraphics = p.createGraphics(256, 256);
+      lpGraphics = p.createGraphics(512, 512);
       
       // Add click listener to canvas
       canvas.elt.addEventListener('click', () => {
@@ -129,11 +130,478 @@ function initLP3D() {
       // Calculate LP size
       const lpRadius = Math.min(p.width, p.height) * 0.32;
       const labelRadius = lpRadius * 0.35;
+      const recordThickness = lpRadius * 0.06;
       
       // Update rotation
       if (isPlaying) {
-        rotationAngle += 2.5;
+        rotationAngle += 2.2;
       }
+      
+      // Smooth tonearm animation
+      const targetArmAngle = isPlaying ? -28 : 40;
+      tonearmAngle = p.lerp(tonearmAngle, targetArmAngle, 0.08);
+      
+      // ─────────────────────────────────────────────────────
+      // LIGHTING SETUP - Enhanced for realism
+      // ─────────────────────────────────────────────────────
+      
+      // Ambient light (softer, cooler)
+      p.ambientLight(60, 60, 70);
+      
+      // Main directional light (warm, from upper left)
+      p.directionalLight(255, 245, 220, -0.8, -0.6, -0.5);
+      
+      // Fill light (cool, from right)
+      p.directionalLight(200, 210, 255, 0.7, 0.3, -0.3);
+      
+      // Rim light (from behind, adds edge definition)
+      p.directionalLight(180, 180, 200, 0.2, 0.8, 0.8);
+      
+      // Point light for vinyl reflection
+      p.pointLight(220, 220, 240, 100, -150, 180);
+      
+      // Camera position - slightly elevated and angled
+      p.camera(0, -lpRadius * 1.0, lpRadius * 2.8, 0, 30, 0, 0, 1, 0);
+      
+      // ─────────────────────────────────────────────────────
+      // TURNTABLE BASE - Cabinet & Platter
+      // ─────────────────────────────────────────────────────
+      
+      // Main cabinet/base
+      p.push();
+      p.translate(0, lpRadius * 0.35, -recordThickness * 2);
+      p.fill(18, 18, 20); // Dark charcoal
+      p.box(lpRadius * 2.8, lpRadius * 0.15, lpRadius * 1.8);
+      p.pop();
+      
+      // Platter (spinning base plate)
+      p.push();
+      p.translate(0, lpRadius * 0.22, 0);
+      p.rotateX(90);
+      
+      // Platter shadow
+      p.noStroke();
+      p.fill(8, 8, 10);
+      p.ellipse(0, 0, lpRadius * 2.65, lpRadius * 2.65);
+      
+      // Metallic platter
+      p.fill(35, 35, 40);
+      p.ellipse(0, 0, lpRadius * 2.55, lpRadius * 2.55);
+      
+      // Platter edge highlight
+      p.stroke(60, 60, 70);
+      p.strokeWeight(1.5);
+      p.noFill();
+      p.ellipse(0, 0, lpRadius * 2.55, lpRadius * 2.55);
+      p.pop();
+      
+      // Rubber mat on platter
+      p.push();
+      p.translate(0, lpRadius * 0.24, 0);
+      p.rotateX(90);
+      p.noStroke();
+      p.fill(12, 12, 15);
+      p.ellipse(0, 0, lpRadius * 2.35, lpRadius * 2.35);
+      
+      // Mat texture (concentric rings)
+      p.stroke(20, 20, 25);
+      p.strokeWeight(0.5);
+      p.noFill();
+      for (let r = lpRadius * 0.4; r < lpRadius * 1.1; r += 8) {
+        p.ellipse(0, 0, r * 2, r * 2);
+      }
+      p.pop();
+      
+      // ─────────────────────────────────────────────────────
+      // LP RECORD - Vinyl Disc with Grooves
+      // ─────────────────────────────────────────────────────
+      
+      p.push();
+      p.translate(0, lpRadius * 0.26, 0);
+      p.rotateX(90);
+      p.rotateZ(rotationAngle);
+      
+      // ── Record edge/thickness (3D effect) ──
+      p.noStroke();
+      
+      // Bottom edge (darker)
+      p.fill(5);
+      p.ellipse(0, 0, lpRadius * 2.02, lpRadius * 2.02);
+      
+      // Side edge
+      p.push();
+      p.rotateX(180);
+      p.translate(0, 0, -recordThickness * 0.5);
+      p.fill(8);
+      p.ellipse(0, 0, lpRadius * 2, lpRadius * 2);
+      p.pop();
+      
+      // Main vinyl surface
+      p.fill(8, 8, 10);
+      p.ellipse(0, 0, lpRadius * 2, lpRadius * 2);
+      
+      // ── Groove rings (the spiral tracks) ──
+      p.noFill();
+      p.strokeWeight(0.4);
+      
+      // Inner grooves (tight, near label)
+      p.stroke(15, 15, 18);
+      for (let r = labelRadius + 15; r < lpRadius * 0.4; r += 1.5) {
+        p.ellipse(0, 0, r * 2, r * 2);
+      }
+      
+      // Mid grooves (medium density)
+      p.stroke(12, 12, 15);
+      for (let r = lpRadius * 0.4; r < lpRadius * 0.75; r += 2) {
+        p.ellipse(0, 0, r * 2, r * 2);
+      }
+      
+      // Outer grooves (wider, toward edge)
+      p.stroke(10, 10, 13);
+      for (let r = lpRadius * 0.75; r < lpRadius * 0.95; r += 2.5) {
+        p.ellipse(0, 0, r * 2, r * 2);
+      }
+      
+      // ── Vinyl shine/reflection ──
+      p.push();
+      p.noStroke();
+      // Light reflection arc
+      p.fill(255, 255, 255, 8);
+      p.arc(0, 0, lpRadius * 1.8, lpRadius * 1.8, -60, 60);
+      
+      // Secondary reflection
+      p.fill(255, 255, 255, 4);
+      p.arc(0, 0, lpRadius * 1.4, lpRadius * 1.4, -45, 30);
+      p.pop();
+      
+      // ── Outer edge highlight ──
+      p.noFill();
+      p.stroke(50, 50, 60);
+      p.strokeWeight(2.5);
+      p.ellipse(0, 0, lpRadius * 2, lpRadius * 2);
+      
+      // ── Edge scotch (protective ring) ──
+      p.stroke(30, 30, 35);
+      p.strokeWeight(1);
+      p.ellipse(0, 0, lpRadius * 1.97, lpRadius * 1.97);
+      
+      p.pop(); // End record
+      
+      // ─────────────────────────────────────────────────────
+      // LABEL (Album Cover)
+      // ─────────────────────────────────────────────────────
+      
+      p.push();
+      p.translate(0, lpRadius * 0.265, 0);
+      p.rotateX(90);
+      p.rotateZ(rotationAngle);
+      
+      // Update label texture
+      updateLabelTexture(p, labelRadius);
+      
+      // Label base
+      p.texture(lpGraphics);
+      p.noStroke();
+      p.ellipse(0, 0, labelRadius * 2, labelRadius * 2);
+      
+      // Label raised edge
+      p.push();
+      p.noFill();
+      p.stroke(40, 40, 45);
+      p.strokeWeight(1);
+      p.ellipse(0, 0, labelRadius * 2, labelRadius * 2);
+      p.pop();
+      
+      // Center hole
+      p.push();
+      p.translate(0, 0, 1);
+      p.fill(25, 25, 28); // Dark hole
+      p.ellipse(0, 0, 8, 8);
+      
+      // Spindle (metallic center post)
+      p.fill(70, 70, 80);
+      p.ellipse(0, 0, 5, 5);
+      
+      // Spindle highlight
+      p.fill(120, 120, 130);
+      p.ellipse(-1, -1, 2, 2);
+      p.pop();
+      
+      p.pop(); // End label
+      
+      // ─────────────────────────────────────────────────────
+      // TONEARM ASSEMBLY - Realistic
+      // ─────────────────────────────────────────────────────
+      
+      drawTonearm3D(p, lpRadius);
+      
+      // ─────────────────────────────────────────────────────
+      // TURNTABLE DETAILS
+      // ─────────────────────────────────────────────────────
+      
+      // Power LED
+      p.push();
+      p.translate(lpRadius * 1.05, lpRadius * 0.28, lpRadius * 0.3);
+      p.noStroke();
+      if (isPlaying) {
+        p.fill(252, 79, 5); // Orange glow
+        p.emissiveMaterial(252, 79, 5, 150);
+      } else {
+        p.fill(40, 40, 45);
+      }
+      p.sphere(4);
+      p.pop();
+      
+      // Speed selector (33/45)
+      p.push();
+      p.translate(-lpRadius * 0.95, lpRadius * 0.32, lpRadius * 0.4);
+      p.noStroke();
+      p.fill(25, 25, 28);
+      p.box(12, 4, 8);
+      p.pop();
+    };
+    
+    p.windowResized = function() {
+      p.resizeCanvas(container.offsetWidth, container.offsetHeight);
+    };
+  }, 'lp-3d-canvas');
+}
+
+function updateLabelTexture(p, labelRadius) {
+  const size = 512;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = size / 2;
+  
+  // Background gradient
+  const gradient = lpGraphics.drawingContext.createRadialGradient(
+    cx, cy, 0, cx, cy, r
+  );
+  gradient.addColorStop(0, '#1a1a1e');
+  gradient.addColorStop(0.7, '#121214');
+  gradient.addColorStop(1, '#0a0a0c');
+  lpGraphics.drawingContext.fillStyle = gradient;
+  lpGraphics.fillRect(0, 0, size, size);
+  
+  // Paper texture (subtle noise)
+  lpGraphics.noStroke();
+  for (let i = 0; i < 500; i++) {
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const d = dist(x, y, cx, cy);
+    if (d < r - 5) {
+      lpGraphics.fill(255, 255, 255, random(2, 8));
+      lpGraphics.rect(x, y, 1, 1);
+    }
+  }
+  
+  // Circular cut edge
+  lpGraphics.stroke(60, 60, 65);
+  lpGraphics.strokeWeight(3);
+  lpGraphics.noFill();
+  lpGraphics.ellipse(cx, cy, size - 6, size - 6);
+  
+  if (currentTrack && currentTrack.coverUrl && images[currentTrack.imgKey]) {
+    // Draw album cover image
+    const img = images[currentTrack.imgKey];
+    lpGraphics.push();
+    lpGraphics.ellipseMode(lpGraphics.CENTER);
+    lpGraphics.imageMode(lpGraphics.CENTER);
+    lpGraphics.image(img, cx, cy, size * 0.85, size * 0.85);
+    lpGraphics.pop();
+  } else {
+    // Default label design
+    lpGraphics.noStroke();
+    
+    // Inner ring
+    lpGraphics.stroke(80, 70, 50, 100);
+    lpGraphics.strokeWeight(1);
+    lpGraphics.noFill();
+    lpGraphics.ellipse(cx, cy, size * 0.9, size * 0.9);
+    
+    // Brand text
+    lpGraphics.textAlign(lpGraphics.CENTER, lpGraphics.CENTER);
+    lpGraphics.fill(255, 200, 100, 200);
+    lpGraphics.textSize(32);
+    lpGraphics.textFont('Georgia');
+    lpGraphics.text('APPLESonic', cx, cy - 30);
+    
+    // Year
+    lpGraphics.fill(255, 180, 80, 150);
+    lpGraphics.textSize(24);
+    lpGraphics.text('2025', cx, cy + 20);
+    
+    // Decorative lines
+    lpGraphics.stroke(255, 180, 80, 80);
+    lpGraphics.strokeWeight(1);
+    lpGraphics.line(cx - 60, cy + 50, cx + 60, cy + 50);
+    lpGraphics.line(cx - 40, cy + 55, cx + 40, cy + 55);
+  }
+  
+  // Outer border
+  lpGraphics.noFill();
+  lpGraphics.stroke(255, 69, 0, 40);
+  lpGraphics.strokeWeight(2);
+  lpGraphics.ellipse(cx, cy, size - 4, size - 4);
+}
+
+function drawTonearm3D(p, lpRadius) {
+  const armLength = lpRadius * 0.75;
+  const pivotX = lpRadius * 0.9;
+  const pivotY = -lpRadius * 0.4;
+  const pivotZ = lpRadius * 0.08;
+  
+  // ─────────────────────────────────────────────────────
+  // ARM BASE (Pivot assembly)
+  // ─────────────────────────────────────────────────────
+  
+  p.push();
+  p.translate(pivotX, pivotY, pivotZ);
+  
+  // Base plate
+  p.noStroke();
+  p.fill(20, 20, 22);
+  p.cylinder(18, 8);
+  
+  // Pivot housing
+  p.fill(45, 45, 50);
+  p.cylinder(10, 20);
+  
+  // Pivot point
+  p.fill(70, 70, 75);
+  p.cylinder(5, 25);
+  
+  // Arm rest (when not playing)
+  if (!isPlaying) {
+    p.push();
+    p.translate(12, 5, 5);
+    p.fill(25, 25, 28);
+    p.box(8, 15, 10);
+    p.pop();
+  }
+  
+  // ─────────────────────────────────────────────────────
+  // TONEARM TUBE
+  // ─────────────────────────────────────────────────────
+  
+  p.push();
+  p.rotateZ(tonearmAngle);
+  
+  // Main arm tube
+  p.noStroke();
+  
+  // Arm shadow (adds depth)
+  p.push();
+  p.translate(2, 2, -2);
+  p.fill(0, 0, 0, 50);
+  p.cylinder(3.5, armLength * 0.85);
+  p.pop();
+  
+  // Arm tube - brushed metal look
+  p.fill(55, 55, 60);
+  p.cylinder(3.2, armLength * 0.85);
+  
+  // Arm highlight
+  p.push();
+  p.rotateX(90);
+  p.translate(0, -armLength * 0.4, 3);
+  p.fill(100, 100, 110, 60);
+  p.cylinder(1, armLength * 0.5);
+  p.pop();
+  
+  // Counterweight (at back of arm)
+  p.push();
+  p.translate(0, armLength * 0.25, 0);
+  p.fill(30, 30, 35);
+  p.sphere(12);
+  
+  // Counterweight ring
+  p.stroke(50, 50, 55);
+  p.strokeWeight(1);
+  p.noFill();
+  p.ellipse(0, 0, 20, 20);
+  p.pop();
+  
+  // ─────────────────────────────────────────────────────
+  // HEADSHELL (Shell that holds cartridge)
+  // ─────────────────────────────────────────────────────
+  
+  p.push();
+  p.translate(0, -armLength * 0.45, 0);
+  
+  // Headshell body
+  p.noStroke();
+  p.fill(40, 40, 45);
+  p.box(10, 22, 14);
+  
+  // Headshell front
+  p.fill(35, 35, 40);
+  p.translate(0, -12, 2);
+  p.box(8, 4, 12);
+  
+  // ─────────────────────────────────────────────────────
+  // CARTRIDGE (The pickup)
+  // ─────────────────────────────────────────────────────
+  
+  p.translate(0, -14, 0);
+  
+  // Cartridge body
+  p.fill(30, 30, 32);
+  p.box(14, 20, 10);
+  
+  // Cartridge top
+  p.fill(45, 45, 50);
+  p.translate(0, -8, 0);
+  p.box(12, 4, 8);
+  
+  // Cartridge label
+  p.fill(60, 55, 50);
+  p.translate(0, -2, 0);
+  p.box(10, 8, 6);
+  
+  // ─────────────────────────────────────────────────────
+  // STYLUS (Needle)
+  // ─────────────────────────────────────────────────────
+  
+  // Stylus cantilever
+  p.push();
+  p.translate(0, -10, 2);
+  p.fill(70, 70, 75);
+  p.rotateX(30);
+  p.cylinder(1.5, 12);
+  p.pop();
+  
+  // Stylus tip (the actual needle)
+  p.push();
+  p.translate(0, -18, 4);
+  p.fill(90, 90, 95);
+  p.rotateX(60);
+  p.cone(2, 8);
+  p.pop();
+  
+  // Stylus guard
+  p.push();
+  p.translate(0, -8, 5);
+  p.fill(50, 50, 55);
+  p.box(6, 8, 2);
+  p.pop();
+  
+  p.pop(); // End cartridge
+  p.pop(); // End headshell
+  p.pop(); // End arm tube
+  p.pop(); // End pivot
+  
+  // ─────────────────────────────────────────────────────
+  // ARM REST POSITION INDICATOR
+  // ─────────────────────────────────────────────────────
+  
+  p.push();
+  p.translate(pivotX + lpRadius * 0.5, pivotY + lpRadius * 0.15, pivotZ);
+  p.noStroke();
+  p.fill(35, 35, 40);
+  p.ellipse(0, 0, 15, 15);
+  p.pop();
+}
       
       // Smooth tonearm animation
       const targetArmAngle = isPlaying ? -25 : 35;
