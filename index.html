@@ -5,33 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apple Music Replay 2025</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.min.js"></script>
   <style>
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --radio-bg: #fc4f05;
-      --radio-warm: #e03d00;
-      --radio-dark: #c23200;
-      --mono-gray: #babab8;
-      --text-light: rgba(255,255,255,0.9);
-      --text-dim: rgba(255,255,255,0.5);
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       overflow: hidden;
       background: #0a0a0a;
       font-family: 'Noto Sans KR', sans-serif;
     }
 
-    /* ── SPLIT LAYOUT ─────────────────────────────────── */
+    /* ── LAYOUT ─────────────────────────────────────── */
     #app {
       display: flex;
       flex-direction: row;
@@ -39,7 +25,7 @@
       height: 100vh;
     }
 
-    /* LEFT: MAP PANEL */
+    /* LEFT: MAP */
     #map-panel {
       position: relative;
       width: 50%;
@@ -48,412 +34,476 @@
       background: #0a0a0a;
       flex-shrink: 0;
     }
-
-    #map-panel canvas {
-      display: block;
-    }
+    #map-panel canvas { display: block; }
 
     .map-header {
       position: absolute;
-      top: 28px;
-      left: 32px;
+      top: 24px; left: 28px;
       z-index: 10;
       pointer-events: none;
     }
-
     .map-header h1 {
       font-family: 'Noto Serif KR', serif;
-      font-size: 1.6rem;
-      color: rgba(255,255,255,0.85);
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.8);
       letter-spacing: -0.02em;
-      line-height: 1.1;
     }
-
     .map-header p {
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.35);
-      margin-top: 5px;
-      font-weight: 300;
-      letter-spacing: 0.12em;
+      font-size: 0.62rem;
+      color: rgba(255,255,255,0.28);
+      margin-top: 4px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-
-    .map-hint {
+    .map-zoom-hint {
       position: absolute;
-      bottom: 28px;
-      left: 50%;
+      bottom: 20px; left: 50%;
       transform: translateX(-50%);
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.25);
-      text-align: center;
+      font-size: 0.58rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.1em;
       pointer-events: none;
       white-space: nowrap;
-      letter-spacing: 0.08em;
     }
 
-    /* Divider */
+    /* DIVIDER */
     #divider {
-      width: 1px;
-      height: 100%;
-      background: rgba(255,255,255,0.08);
+      width: 1px; height: 100%;
+      background: rgba(255,255,255,0.07);
       flex-shrink: 0;
     }
 
-    /* RIGHT: RADIO PANEL */
-    #radio-panel {
+    /* ── RIGHT: LP PANEL ─────────────────────────────── */
+    #lp-panel {
       position: relative;
-      width: 50%;
-      height: 100%;
-      background: var(--radio-bg);
+      width: 50%; height: 100%;
+      background: #111008;
       overflow: hidden;
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
     }
 
-    /* Radio noise texture overlay */
-    #radio-panel::before {
+    /* Warm vignette */
+    #lp-panel::after {
       content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-      background-size: 200px 200px;
-      opacity: 0.15;
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(0,0,0,0.55) 100%);
       pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Radio background placeholder (replace src with actual radio image) */
-    #radio-bg-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.12;
-      mix-blend-mode: luminosity;
       z-index: 0;
-      display: none; /* shown when image is set */
     }
 
-    /* Radio idle state */
-    #radio-idle {
-      position: absolute;
-      inset: 0;
+    /* Wood plinth */
+    .plinth {
+      position: relative;
+      z-index: 1;
+      background:
+        linear-gradient(170deg, #2a1f0e 0%, #1a1208 40%, #221908 70%, #2e2210 100%);
+      border-radius: 18px;
+      padding: 28px 32px 24px;
+      box-shadow:
+        0 2px 0 rgba(255,210,100,0.06) inset,
+        0 -1px 0 rgba(0,0,0,0.8) inset,
+        0 30px 80px rgba(0,0,0,0.7),
+        0 2px 4px rgba(255,190,60,0.08);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      z-index: 2;
-      transition: opacity 0.4s ease;
+      gap: 0;
+      /* wood grain lines */
+      background-image:
+        repeating-linear-gradient(
+          92deg,
+          transparent,
+          transparent 18px,
+          rgba(0,0,0,0.04) 18px,
+          rgba(0,0,0,0.04) 19px
+        ),
+        linear-gradient(170deg, #2a1f0e 0%, #1a1208 40%, #221908 70%, #2e2210 100%);
     }
 
-    #radio-idle.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .radio-logo {
-      width: 80px;
-      height: 80px;
-      border: 2px solid rgba(255,255,255,0.25);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
+    /* ── TURNTABLE AREA ──────────────────────────────── */
+    .turntable {
       position: relative;
+      width: 260px; height: 260px;
     }
 
-    .radio-logo::after {
+    /* Platter (metal ring) */
+    .platter {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #3a3a38, #1c1c1a);
+      box-shadow:
+        0 0 0 3px #111,
+        0 8px 24px rgba(0,0,0,0.6),
+        inset 0 1px 2px rgba(255,255,255,0.05);
+    }
+
+    /* Vinyl record */
+    .record {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%,
+          #1a1a1a 0%,
+          #111 30%,
+          #0d0d0d 31%,
+          #1a1a1a 32%,
+          #0d0d0d 38%,
+          #1a1a1a 39%,
+          #0d0d0d 46%,
+          #1a1a1a 47%,
+          #0d0d0d 55%,
+          #1a1a1a 56%,
+          #111 100%
+        );
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      transition: animation-play-state 0.3s;
+    }
+
+    .record.spinning {
+      animation: recordSpin 1.8s linear infinite;
+    }
+
+    @keyframes recordSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Record shine */
+    .record::before {
       content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: rgba(255,255,255,0.5);
+      position: absolute; inset: 0;
       border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%, rgba(255,255,255,0.03) 15%,
+        transparent 30%, rgba(255,255,255,0.015) 50%,
+        transparent 70%, rgba(255,255,255,0.025) 85%,
+        transparent 100%
+      );
     }
 
-    .radio-logo svg {
-      opacity: 0.4;
-    }
-
-    .radio-idle-text {
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.35);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    /* Radio active state — shown on hover */
-    #radio-active {
+    /* Center label area (album art goes here) */
+    .record-label {
       position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-      padding: 40px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 38%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #1a1a18;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.05);
+      transition: opacity 0.5s ease;
     }
 
-    #radio-active.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .radio-album-wrap {
-      position: relative;
-      margin-bottom: 32px;
-    }
-
-    #radio-album-img {
-      width: 200px;
-      height: 200px;
-      border-radius: 4px;
+    #lp-album-art {
+      width: 100%; height: 100%;
       object-fit: cover;
       display: block;
-      /* grayscale + tint to #babab8 */
-      filter: grayscale(100%) brightness(0.85) sepia(10%);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      transition: all 0.4s cubic-bezier(.23,1,.32,1);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    #lp-album-art.loaded { opacity: 1; }
+
+    /* Center spindle */
+    .spindle {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #aaa, #555);
+      z-index: 3;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
-    /* Colored overlay tint to approximate #babab8 */
-    .radio-album-wrap::after {
+    /* ── TONEARM ─────────────────────────────────────── */
+    .tonearm-wrap {
+      position: absolute;
+      top: -4px; right: -18px;
+      width: 80px; height: 180px;
+      transform-origin: 18px 18px;
+      transform: rotate(-28deg);
+      transition: transform 0.8s cubic-bezier(.23,1,.32,1);
+      z-index: 4;
+    }
+
+    .tonearm-wrap.playing {
+      transform: rotate(0deg);
+    }
+
+    /* Pivot ball */
+    .tonearm-pivot {
+      position: absolute;
+      top: 4px; left: 6px;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ccc, #555);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      z-index: 5;
+    }
+
+    /* Arm tube */
+    .tonearm-arm {
+      position: absolute;
+      top: 16px; left: 17px;
+      width: 3px;
+      height: 140px;
+      background: linear-gradient(to right, #999, #bbb, #888);
+      transform-origin: top center;
+      transform: rotate(12deg);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    /* Headshell */
+    .tonearm-head {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 14px; height: 22px;
+      background: linear-gradient(to bottom, #aaa, #777);
+      border-radius: 3px 3px 6px 6px;
+    }
+    .tonearm-head::after {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: 4px;
-      background: rgba(186,186,184,0.18);
-      mix-blend-mode: color;
-      pointer-events: none;
+      bottom: -4px; left: 50%;
+      transform: translateX(-50%);
+      width: 2px; height: 6px;
+      background: #fc4f05;
+      border-radius: 1px;
     }
 
-    /* Month badge */
-    .radio-month-badge {
+    /* Counterweight */
+    .tonearm-weight {
       position: absolute;
-      top: -10px;
-      right: -10px;
-      background: rgba(0,0,0,0.6);
-      color: rgba(255,255,255,0.7);
-      font-size: 0.62rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-family: 'DM Mono', monospace;
+      top: 12px; left: 9px;
+      width: 16px; height: 20px;
+      background: radial-gradient(circle at 40% 30%, #aaa, #555);
+      border-radius: 4px;
+      transform: rotate(-12deg);
     }
 
-    .radio-info {
+    /* ── SONG INFO ───────────────────────────────────── */
+    .lp-info {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      width: 100%;
+      padding-top: 22px;
+      width: 260px;
+      min-height: 110px;
     }
 
-    #radio-title {
+    .lp-idle-msg {
+      font-size: 0.62rem;
+      color: rgba(255,210,80,0.25);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding-top: 18px;
+      transition: opacity 0.4s;
+    }
+    .lp-idle-msg.hidden { opacity: 0; }
+
+    .lp-song-info {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    .lp-song-info.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .lp-month {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      color: rgba(255,190,60,0.45);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .lp-title {
       font-family: 'Noto Serif KR', serif;
-      font-size: 1.4rem;
-      color: rgba(255,255,255,0.95);
-      line-height: 1.25;
-      margin-bottom: 8px;
+      font-size: 1.15rem;
+      color: rgba(255,240,200,0.92);
+      line-height: 1.3;
+      margin-bottom: 5px;
       word-break: keep-all;
     }
 
-    #radio-artist {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.65);
-      margin-bottom: 16px;
+    .lp-artist {
+      font-size: 0.78rem;
+      color: rgba(255,220,150,0.45);
       font-weight: 300;
+      margin-bottom: 14px;
     }
 
-    .radio-plays {
+    .lp-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .lp-plays {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .lp-plays-dot {
+      width: 5px; height: 5px;
+      background: #fc4f05;
+      border-radius: 50%;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.35; transform:scale(0.65); }
+    }
+    .lp-plays-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: rgba(255,210,80,0.4);
+      letter-spacing: 0.04em;
+    }
+
+    #lp-yt-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(252,79,5,0.15);
+      border: 1px solid rgba(252,79,5,0.35);
+      color: rgba(255,180,100,0.85);
+      padding: 6px 14px;
       border-radius: 20px;
-      padding: 5px 14px;
-      margin-bottom: 28px;
-    }
-
-    .radio-plays-dot {
-      width: 5px;
-      height: 5px;
-      background: rgba(255,255,255,0.5);
-      border-radius: 50%;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.7); }
-    }
-
-    #radio-plays-count {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.05em;
-    }
-
-    #radio-yt-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.9);
-      padding: 11px 24px;
-      border-radius: 30px;
-      font-family: 'Noto Sans KR', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s ease;
-      letter-spacing: 0.05em;
+      font-family: 'Noto Sans KR', sans-serif;
     }
-
-    #radio-yt-btn:hover {
-      background: rgba(0,0,0,0.45);
-      border-color: rgba(255,255,255,0.4);
+    #lp-yt-btn:hover {
+      background: rgba(252,79,5,0.28);
+      border-color: rgba(252,79,5,0.6);
       transform: translateY(-1px);
     }
 
-    #radio-yt-btn svg {
-      flex-shrink: 0;
+    /* Stylus indicator LED */
+    .lp-led {
+      position: absolute;
+      top: 20px; left: 24px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #222;
+      box-shadow: 0 0 0 2px #111;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .lp-led.on {
+      background: #fc4f05;
+      box-shadow: 0 0 8px rgba(252,79,5,0.8), 0 0 0 2px #111;
     }
 
-    /* Decorative scan lines on radio panel */
-    .radio-scanlines {
+    /* Brand text */
+    .lp-brand {
       position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        rgba(0,0,0,0.03) 3px,
-        rgba(0,0,0,0.03) 4px
-      );
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    /* Radio panel label */
-    .radio-label {
-      position: absolute;
-      top: 28px;
-      right: 28px;
-      font-size: 0.62rem;
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+      top: 20px; right: 26px;
       font-family: 'DM Mono', monospace;
-      z-index: 10;
+      font-style: italic;
+      font-size: 0.58rem;
+      color: rgba(255,190,60,0.18);
+      letter-spacing: 0.12em;
     }
 
-    /* ── MOBILE ────────────────────────────────────────── */
+    /* ── MOBILE ──────────────────────────────────────── */
     @media (max-width: 768px) {
-      #app {
-        flex-direction: column;
-      }
-
-      #map-panel {
-        width: 100%;
-        height: 50%;
-      }
-
-      #divider {
-        width: 100%;
-        height: 1px;
-      }
-
-      #radio-panel {
-        width: 100%;
-        height: 50%;
-      }
-
-      #radio-album-img {
-        width: 120px;
-        height: 120px;
-      }
-
-      #radio-title {
-        font-size: 1rem;
-      }
-
-      .radio-album-wrap {
-        margin-bottom: 16px;
-      }
-
-      #radio-active {
-        padding: 20px;
-      }
-
-      .map-header h1 {
-        font-size: 1.2rem;
-      }
+      #app { flex-direction: column; }
+      #map-panel { width: 100%; height: 50%; }
+      #divider { width: 100%; height: 1px; }
+      #lp-panel { width: 100%; height: 50%; }
+      .turntable { width: 180px; height: 180px; }
+      .lp-info { width: 180px; padding-top: 14px; }
+      .plinth { padding: 18px 22px 16px; }
+      .lp-title { font-size: 0.9rem; }
     }
   </style>
 </head>
 <body>
-  <div id="app">
-    <!-- LEFT: MAP -->
-    <div id="map-panel">
-      <div class="map-header">
-        <h1>2025</h1>
-        <p>Music Map</p>
-      </div>
-      <!-- p5.js canvas goes here -->
+<div id="app">
+
+  <!-- LEFT: MAP -->
+  <div id="map-panel">
+    <div class="map-header">
+      <h1>2025</h1>
+      <p>Music Map</p>
     </div>
-
-    <div id="divider"></div>
-
-    <!-- RIGHT: RADIO -->
-    <div id="radio-panel">
-      <div class="radio-scanlines"></div>
-
-      <!-- Radio background image (set src when ready) -->
-      <img id="radio-bg-img" src="" alt="" />
-
-      <div class="radio-label">Radio / 라디오</div>
-
-      <!-- Idle state -->
-      <div id="radio-idle">
-        <div class="radio-logo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
-        </div>
-        <div class="radio-idle-text">앨범에 마우스를 올려보세요</div>
-      </div>
-
-      <!-- Active state (on hover) -->
-      <div id="radio-active">
-        <div class="radio-album-wrap">
-          <img id="radio-album-img" src="" alt="" crossorigin="anonymous" />
-          <div class="radio-month-badge" id="radio-month">1월</div>
-        </div>
-        <div class="radio-info">
-          <div id="radio-title">곡 제목</div>
-          <div id="radio-artist">아티스트</div>
-          <div class="radio-plays">
-            <div class="radio-plays-dot"></div>
-            <span id="radio-plays-count">— 회 재생</span>
-          </div>
-          <a id="radio-yt-btn" href="#" target="_blank" rel="noopener">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/>
-            </svg>
-            YouTube에서 듣기
-          </a>
-        </div>
-      </div>
-    </div>
+    <div class="map-zoom-hint">스크롤로 확대 · 드래그로 이동</div>
   </div>
 
-  <script src="app.js"></script>
+  <div id="divider"></div>
+
+  <!-- RIGHT: LP PLAYER -->
+  <div id="lp-panel">
+
+    <div class="lp-led" id="lp-led"></div>
+    <div class="lp-brand">Replay–01</div>
+
+    <div class="plinth">
+      <!-- Turntable -->
+      <div class="turntable">
+        <div class="platter"></div>
+
+        <!-- Vinyl record -->
+        <div class="record" id="lp-record">
+          <div class="record-label">
+            <img id="lp-album-art" src="" alt="" crossorigin="anonymous" />
+          </div>
+          <div class="spindle"></div>
+        </div>
+
+        <!-- Tonearm -->
+        <div class="tonearm-wrap" id="lp-tonearm">
+          <div class="tonearm-weight"></div>
+          <div class="tonearm-pivot"></div>
+          <div class="tonearm-arm">
+            <div class="tonearm-head"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="lp-info">
+        <div class="lp-idle-msg" id="lp-idle-msg">앨범에 마우스를 올려보세요</div>
+        <div class="lp-song-info" id="lp-song-info">
+          <div class="lp-month" id="lp-month"></div>
+          <div class="lp-title" id="lp-title"></div>
+          <div class="lp-artist" id="lp-artist"></div>
+          <div class="lp-meta">
+            <div class="lp-plays">
+              <div class="lp-plays-dot"></div>
+              <span class="lp-plays-count" id="lp-plays"></span>
+            </div>
+            <a id="lp-yt-btn" href="#" target="_blank" rel="noopener">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/>
+              </svg>
+              YouTube
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
