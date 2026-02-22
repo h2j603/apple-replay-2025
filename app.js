@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════
-   Apple Music Replay 2025 — Map + LP Player (Three.js)
+   Apple Music Replay 2025 — Map + Simple LP Player
    ══════════════════════════════════════════════════════ */
 
 let data = [];
@@ -12,11 +12,9 @@ let connections = [];
 let genreConnections = [];
 let canvasReady = false;
 
-// Toggle state for connections (changed by click count)
+// Toggle state for connections (changed by click)
 let showArtistConnections = true;
 let showGenreConnections = false;
-let lastClickTime = 0;
-let lastClickedTrack = null;
 
 // Larger radius range for more visible size difference
 const MIN_RADIUS = 5;
@@ -32,20 +30,6 @@ let panX = 0, panY = 0;
 // Hover repulsion state
 let repulsionActive = false;
 let repulsionTarget = null;
-
-// ── THREE.JS LP PLAYER VARIABLES ───────────────────────
-let threeScene, threeCamera, threeRenderer;
-let vinylMesh, labelMesh, platterMesh, tonearmGroup;
-let ledMesh, ledLight;
-let isPlaying = false;
-let albumTexture = null;
-let currentBubble = null;
-
-// Arm animation states
-const ARM_IDLE = -28;
-const ARM_PLAY = 0;
-let armTargetRotation = ARM_IDLE;
-let armCurrentRotation = ARM_IDLE;
 
 /* ── Preload ────────────────────────────────────────── */
 function preload() {
@@ -145,36 +129,9 @@ function setup() {
   textAlign(CENTER, CENTER);
   canvasReady = true;
   if (bubbles.length > 0) arrangeSpiral();
-  
-  // Initialize Three.js LP Player
-  initThreeLP();
 }
 
-/* ── THREE.JS LP PLAYER INITIALIZATION ───────────────── */
-function initThreeLP() {
-  const container = document.getElementById('three-lp-container');
-  const width = container.clientWidth;
-  const height = container.clientHeight;
-  
-  // Scene
-  threeScene = new THREE.Scene();
-  
-  // Camera - angled view to see LP label
-  threeCamera = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
-  threeCamera.position.set(0, 2.8, 3.2);
-  threeCamera.lookAt(0, -0.2, 0);
-  
-  // Renderer
-  threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, antialias: true });
-  threeRenderer.setSize(width, height);
-  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 3));
-  threeRenderer.setClearColor(0x000000, 0);
-  threeRenderer.shadowMap.enabled = true;
-  threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-  threeRenderer.toneMappingExposure = 1.0;
-  threeRenderer.outputEncoding = THREE.sRGBEncoding;
-  container.appendChild(threeRenderer.domElement);
+/* ── SIMPLE LP LABEL UPDATE (No Three.js) ───────────────── */
   
   // ── LIGHTING ─────────────────────────────────────────
   // Ambient light
@@ -642,47 +599,60 @@ function applyReturnForce() {
 
 /* ── Connections ────────────────────────────────────── */
 function drawConnections() {
+  // Orangered color (#FF4500) for all connections
+  const lineColor = color(255, 69, 0);
+  
   // Draw artist connections
   if (showArtistConnections) {
     connections.forEach(({ a, b }) => {
       const active = hoveredBubble && a.artist === hoveredBubble.artist;
       if (active) {
-        stroke(255, 255, 255, 100); strokeWeight(1 / zoomLevel);
+        stroke(red(lineColor), green(lineColor), blue(lineColor), 200); strokeWeight(1.5 / zoomLevel);
         drawingContext.setLineDash([]);
       } else {
-        stroke(255, 255, 255, 14); strokeWeight(0.5 / zoomLevel);
+        stroke(red(lineColor), green(lineColor), blue(lineColor), 40); strokeWeight(0.5 / zoomLevel);
         drawingContext.setLineDash([3, 7]);
       }
       line(a.x, a.y, b.x, b.y);
       drawingContext.setLineDash([]);
 
       if (active) {
-        noStroke(); fill(255, 255, 255, 140);
-        ellipse((a.x + b.x) / 2, (a.y + b.y) / 2, 3 / zoomLevel, 3 / zoomLevel);
+        noStroke(); fill(red(lineColor), green(lineColor), blue(lineColor), 220);
+        const midX = (a.x + b.x) / 2;
+        const midY = (a.y + b.y) / 2;
+        ellipse(midX, midY, 4 / zoomLevel, 4 / zoomLevel);
+        // Text hint
+        textSize(8 / zoomLevel);
+        textAlign(CENTER, CENTER);
+        text('아티스트', midX, midY - 10 / zoomLevel);
       }
     });
   }
   
   // Draw genre connections
   if (showGenreConnections) {
-    const genreColor = color('rgba(252, 79, 5, 0.8)'); // Orange for genre
     genreConnections.forEach(({ a, b, genre }) => {
-      // Extract first genre for comparison with hovered bubble
       const hoveredGenre = hoveredBubble && hoveredBubble.genre ? hoveredBubble.genre.split(',')[0].trim() : null;
       const active = hoveredGenre && genre === hoveredGenre;
       if (active) {
-        stroke(252, 79, 5, 180); strokeWeight(1.5 / zoomLevel);
+        stroke(red(lineColor), green(lineColor), blue(lineColor), 200); strokeWeight(1.5 / zoomLevel);
         drawingContext.setLineDash([]);
       } else {
-        stroke(252, 79, 5, 30); strokeWeight(0.7 / zoomLevel);
+        stroke(red(lineColor), green(lineColor), blue(lineColor), 40); strokeWeight(0.5 / zoomLevel);
         drawingContext.setLineDash([4, 6]);
       }
       line(a.x, a.y, b.x, b.y);
       drawingContext.setLineDash([]);
 
       if (active) {
-        noStroke(); fill(252, 79, 5, 200);
-        ellipse((a.x + b.x) / 2, (a.y + b.y) / 2, 4 / zoomLevel, 4 / zoomLevel);
+        noStroke(); fill(red(lineColor), green(lineColor), blue(lineColor), 220);
+        const midX = (a.x + b.x) / 2;
+        const midY = (a.y + b.y) / 2;
+        ellipse(midX, midY, 4 / zoomLevel, 4 / zoomLevel);
+        // Text hint
+        textSize(8 / zoomLevel);
+        textAlign(CENTER, CENTER);
+        text('장르', midX, midY - 10 / zoomLevel);
       }
     });
   }
@@ -785,56 +755,41 @@ function mousePressed() {
   });
   
   if (clicked) {
-    const currentTime = millis();
-    const isDoubleClick = (currentTime - lastClickTime < 400) && (lastClickedTrack === clicked.idx);
-    
-    if (isDoubleClick) {
-      // Double click: show genre connections
+    // Toggle between artist and genre connections on each click
+    if (showArtistConnections) {
       showArtistConnections = false;
       showGenreConnections = true;
     } else {
-      // Single click: show artist connections
       showArtistConnections = true;
       showGenreConnections = false;
     }
     
-    lastClickTime = currentTime;
-    lastClickedTrack = clicked.idx;
     clickedBubble = clicked;
     lastClickedBubble = clickedBubble;
     updateLPPlayer(lastClickedBubble);
   }
 }
 
-/* ── LP Player (Three.js) ────────────────────────────── */
+/* ── SIMPLE LP PLAYER UPDATE ──────────────────────────── */
 function updateLPPlayer(b) {
-  const led = document.getElementById('lp-led');
   const idleMsg = document.getElementById('lp-idle-msg');
   const songInfo = document.getElementById('lp-song-info');
+  const lpLabel = document.getElementById('lp-label');
+  const lpPlaceholder = document.getElementById('lp-label-placeholder');
 
   if (!b) {
-    // Stop playing
-    isPlaying = false;
-    armTargetRotation = ARM_IDLE;
-    if (led) led.classList.remove('on');
     if (idleMsg) idleMsg.classList.remove('hidden');
     if (songInfo) songInfo.classList.remove('visible');
     return;
   }
 
-  // Start playing
-  isPlaying = true;
-  armTargetRotation = ARM_PLAY;
-  if (led) led.classList.add('on');
-  
-  // Update current bubble
-  currentBubble = b;
-  
-  // Update album art texture on label
-  if (b.coverUrl) {
-    createLabelTexture(b.coverUrl);
-  } else {
-    createLabelTexture(null);
+  // Update album art on LP label
+  if (lpLabel) {
+    if (b.coverUrl) {
+      lpLabel.innerHTML = `<img src="${b.coverUrl}" alt="Album Cover">`;
+    } else {
+      lpLabel.innerHTML = '<span id="lp-label-placeholder">Album</span>';
+    }
   }
 
   // Text info
@@ -870,16 +825,6 @@ function windowResized() {
   const panel = document.getElementById('map-panel');
   resizeCanvas(panel.offsetWidth, panel.offsetHeight);
   arrangeSpiral();
-  
-  // Resize Three.js LP player
-  const container = document.getElementById('three-lp-container');
-  if (container && threeRenderer && threeCamera) {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    threeRenderer.setSize(width, height);
-    threeCamera.aspect = width / height;
-    threeCamera.updateProjectionMatrix();
-  }
 }
 
 /* ── Color ──────────────────────────────────────────── */
