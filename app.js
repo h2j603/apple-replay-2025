@@ -161,9 +161,9 @@ function initThreeLP() {
   threeScene = new THREE.Scene();
   
   // Camera - angled view to see LP label
-  threeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-  threeCamera.position.set(0, 2.5, 3.5);
-  threeCamera.lookAt(0, -0.3, 0);
+  threeCamera = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
+  threeCamera.position.set(0, 2.8, 3.2);
+  threeCamera.lookAt(0, -0.2, 0);
   
   // Renderer
   threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -202,53 +202,52 @@ function initThreeLP() {
   threeScene.add(spotLight.target);
   
   // ── PLINTH (Wood Base) ───────────────────────────────
-  const plinthGeom = new THREE.BoxGeometry(2.8, 0.15, 2.8);
+  const plinthGeom = new THREE.BoxGeometry(2.8, 0.12, 2.8);
   const plinthMat = new THREE.MeshStandardMaterial({
     color: 0x2a1f0e,
     roughness: 0.8,
     metalness: 0.1
   });
   const plinthMesh = new THREE.Mesh(plinthGeom, plinthMat);
-  plinthMesh.position.y = -0.2;
+  plinthMesh.position.y = -0.35;
   threeScene.add(plinthMesh);
-  
+
   // Plinth top surface
-  const plinthTopGeom = new THREE.BoxGeometry(2.7, 0.02, 2.7);
+  const plinthTopGeom = new THREE.BoxGeometry(2.7, 0.015, 2.7);
   const plinthTopMat = new THREE.MeshStandardMaterial({
     color: 0x1a1208,
     roughness: 0.9,
     metalness: 0.0
   });
   const plinthTopMesh = new THREE.Mesh(plinthTopGeom, plinthTopMat);
-  plinthTopMesh.position.y = -0.12;
+  plinthTopMesh.position.y = -0.28;
   threeScene.add(plinthTopMesh);
-  
+
   // ── PLATTER (Metal Ring) ─────────────────────────────
-  const platterGeom = new THREE.CylinderGeometry(1.15, 1.15, 0.08, 64);
+  const platterGeom = new THREE.CylinderGeometry(1.15, 1.15, 0.06, 64);
   const platterMat = new THREE.MeshStandardMaterial({
     color: 0x2a2a28,
     roughness: 0.3,
     metalness: 0.7
   });
   platterMesh = new THREE.Mesh(platterGeom, platterMat);
-  platterMesh.rotation.x = Math.PI / 2;
-  platterMesh.position.y = -0.06;
+  platterMesh.position.y = -0.18;
   threeScene.add(platterMesh);
-  
+
   // Platter edge ring
-  const platterRingGeom = new THREE.TorusGeometry(1.15, 0.03, 16, 64);
+  const platterRingGeom = new THREE.TorusGeometry(1.15, 0.025, 16, 64);
   const platterRingMat = new THREE.MeshStandardMaterial({
     color: 0x111111,
     roughness: 0.5,
     metalness: 0.8
   });
   const platterRing = new THREE.Mesh(platterRingGeom, platterRingMat);
-  platterRing.position.y = -0.02;
+  platterRing.position.y = -0.14;
   threeScene.add(platterRing);
   
   // ── VINYL RECORD ──────────────────────────────────────
-  // Create vinyl with groove texture
-  const vinylGeom = new THREE.CircleGeometry(1.0, 64);
+  // Create vinyl with groove texture (cylinder for 3D effect)
+  const vinylGeom = new THREE.CylinderGeometry(1.0, 1.0, 0.02, 64);
   
   // Create canvas for vinyl texture with grooves
   const vinylCanvas = document.createElement('canvas');
@@ -288,35 +287,33 @@ function initThreeLP() {
     metalness: 0.1
   });
   vinylMesh = new THREE.Mesh(vinylGeom, vinylMat);
-  vinylMesh.rotation.x = -Math.PI / 2;
-  vinylMesh.position.y = -0.01;
+  vinylMesh.position.y = 0;
   threeScene.add(vinylMesh);
   
   // ── CENTER LABEL (Album Art) ──────────────────────────
-  const labelGeom = new THREE.CircleGeometry(0.38, 64);
+  // Use cylinder for 3D label on top of vinyl
+  const labelGeom = new THREE.CylinderGeometry(0.38, 0.38, 0.015, 64);
   const labelMat = new THREE.MeshStandardMaterial({
     color: 0x1a1a18,
     roughness: 0.7,
     metalness: 0.0
   });
   labelMesh = new THREE.Mesh(labelGeom, labelMat);
-  labelMesh.rotation.x = -Math.PI / 2.5;
-  labelMesh.position.y = 0.01;
+  labelMesh.position.y = 0.018;
   threeScene.add(labelMesh);
   
   // Create placeholder texture for label
   createLabelTexture(null);
   
   // Spindle
-  const spindleGeom = new THREE.CylinderGeometry(0.03, 0.03, 0.1, 16);
+  const spindleGeom = new THREE.CylinderGeometry(0.03, 0.03, 0.15, 16);
   const spindleMat = new THREE.MeshStandardMaterial({
     color: 0x888888,
     roughness: 0.3,
     metalness: 0.8
   });
   const spindle = new THREE.Mesh(spindleGeom, spindleMat);
-  spindle.rotation.x = Math.PI / 2;
-  spindle.position.y = 0.02;
+  spindle.position.y = 0.03;
   threeScene.add(spindle);
   
   // ── TONEARM ──────────────────────────────────────────
@@ -495,7 +492,7 @@ function animateThreeLP() {
   
   // Rotate vinyl when playing
   if (isPlaying && vinylMesh) {
-    vinylMesh.rotation.z += 0.03;
+    vinylMesh.rotation.y += 0.03;
   }
   
   // Animate tonearm
