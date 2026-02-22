@@ -9,7 +9,8 @@
         "artist": "단편선 순간들",
         "plays": 22,
         "cover_url": "covers/2025-01_음악만세.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=rxhMEWl6C8s"
+        "youtube_url": "https://www.youtube.com/watch?v=rxhMEWl6C8s",
+        "genre": "Indie, Folk, Psychedelic"
       },
       {
         "rank": 2,
@@ -17,7 +18,8 @@
         "artist": "Wonder Girls",
         "plays": 19,
         "cover_url": "covers/2025-01_Girls Girls.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=mrF-Ow1vG2E"
+        "youtube_url": "https://www.youtube.com/watch?v=mrF-Ow1vG2E",
+        "genre": "K-Pop"
       },
       {
         "rank": 3,
@@ -25,7 +27,8 @@
         "artist": "Chan",
         "plays": 18,
         "cover_url": "covers/2025-01_바이닐스토어.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=3Rz5GCGwjUk"
+        "youtube_url": "https://www.youtube.com/watch?v=3Rz5GCGwjUk",
+        "genre": "Funk, Soul, R&B"
       },
       {
         "rank": 4,
@@ -33,7 +36,8 @@
         "artist": "보아",
         "plays": 17,
         "cover_url": "covers/2025-01_메리-크리.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=acgu_FCtpQw"
+        "youtube_url": "https://www.youtube.com/watch?v=acgu_FCtpQw",
+        "genre": "Ballad"
       },
       {
         "rank": 5,
@@ -41,7 +45,8 @@
         "artist": "Lana Del Rey",
         "plays": 17,
         "cover_url": "covers/2025-01_Margaret feat Bleachers.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=2xtKhqbNBoY"
+        "youtube_url": "https://www.youtube.com/watch?v=2xtKhqbNBoY",
+        "genre": "Indie Pop, Alternative"
       }
     ]
   },
@@ -55,7 +60,8 @@
         "artist": "f(x)",
         "plays": 26,
         "cover_url": "covers/2025-02_미행 그림자 Shadow.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=5LrLW-T7D-w"
+        "youtube_url": "https://www.youtube.com/watch?v=5LrLW-T7D-w",
+        "genre": "Alternative Pop, Electronic"
       },
       {
         "rank": 2,
@@ -63,7 +69,8 @@
         "artist": "리센느",
         "plays": 26,
         "cover_url": "covers/2025-02_LOVE ATTACK.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=WucNtsXxqpI"
+        "youtube_url": "https://www.youtube.com/watch?v=WucNtsXxqpI",
+        "genre": "K-Pop, Dance"
       },
       {
         "rank": 3,
@@ -71,7 +78,8 @@
         "artist": "Toto",
         "plays": 24,
         "cover_url": "covers/2025-02_Georgy Porgy.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=EWIgEtkE3GA"
+        "youtube_url": "https://www.youtube.com/watch?v=EWIgEtkE3GA",
+        "genre": "Rock, Pop"
       },
       {
         "rank": 4,
@@ -79,7 +87,8 @@
         "artist": "CL",
         "plays": 23,
         "cover_url": "covers/2025-02_Let It.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=dp_5u1GNXOE"
+        "youtube_url": "https://www.youtube.com/watch?v=dp_5u1GNXOE",
+        "genre": "K-Pop, Hip-hop, Electronic"
       },
       {
         "rank": 5,
@@ -87,7 +96,8 @@
         "artist": "Troye Sivan",
         "plays": 22,
         "cover_url": "covers/2025-02_for him feat Allday.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=Ins6dp9m_hs"
+        "youtube_url": "https://www.youtube.com/watch?v=Ins6dp9m_hs",
+        "genre": "Pop, R&B"
       }
     ]
   },
@@ -101,7 +111,8 @@
         "artist": "이키모노가카리",
         "plays": 42,
         "cover_url": "covers/2025-03_気まぐれロマンティック.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=5XCSt_0lwOE"
+        "youtube_url": "https://www.youtube.com/watch?v=5XCSt_0lwOE",
+        "genre": "J-Pop"
       },
       {
         "rank": 2,
@@ -109,7 +120,8 @@
         "artist": "f(x)",
         "plays": 32,
         "cover_url": "covers/2025-03_제트별.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=Ae8W4iuh-2c"
+        "youtube_url": "https://www.youtube.com/watch?v=Ae8W4iuh-2c",
+        "genre": "K-Pop, Electronic, Dance"
       },
       {
         "rank": 3,
@@ -117,7 +129,8 @@
         "artist": "조이",
         "plays": 31,
         "cover_url": "covers/2025-03_Day By Day.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=PBgyXPO2JzE"
+        "youtube_url": "https://www.youtube.com/watch?v=PBgyXPO2JzE",
+        "genre": "R&B, Soul"
       },
       {
         "rank": 4,
@@ -125,7 +138,8 @@
         "artist": "보수동쿨러",
         "plays": 30,
         "cover_url": "covers/2025-03_0308.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=WHhbac6PVqs"
+        "youtube_url": "https://www.youtube.com/watch?v=WHhbac6PVqs",
+        "genre": "Indie, Rock"
       },
       {
         "rank": 5,
@@ -133,7 +147,8 @@
         "artist": "신인류",
         "plays": 25,
         "cover_url": "covers/2025-03_바이킹 Remastered 2023.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=Tu3zQzZmyzY"
+        "youtube_url": "https://www.youtube.com/watch?v=Tu3zQzZmyzY",
+        "genre": "Indie Rock"
       }
     ]
   },
@@ -147,7 +162,8 @@
         "artist": "백 넘버",
         "plays": 29,
         "cover_url": "covers/2025-04_Takaneno Hanakosan.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=LgLMA1MR7iE"
+        "youtube_url": "https://www.youtube.com/watch?v=LgLMA1MR7iE",
+        "genre": "J-Pop"
       },
       {
         "rank": 2,
@@ -155,7 +171,8 @@
         "artist": "Fromm",
         "plays": 29,
         "cover_url": "covers/2025-04_너와 나의.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=ISWViDHYkRE"
+        "youtube_url": "https://www.youtube.com/watch?v=ISWViDHYkRE",
+        "genre": "Pop, Indie"
       },
       {
         "rank": 3,
@@ -163,7 +180,8 @@
         "artist": "이즈나",
         "plays": 28,
         "cover_url": "covers/2025-04_SIGN.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=88GkYKvnvvI"
+        "youtube_url": "https://www.youtube.com/watch?v=88GkYKvnvvI",
+        "genre": "K-Pop, Dance"
       },
       {
         "rank": 4,
@@ -171,7 +189,8 @@
         "artist": "민수",
         "plays": 25,
         "cover_url": "covers/2025-04_사랑 놀이.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=YCaL9fPfv5E"
+        "youtube_url": "https://www.youtube.com/watch?v=YCaL9fPfv5E",
+        "genre": "Indie Pop, R&B"
       },
       {
         "rank": 5,
@@ -179,7 +198,8 @@
         "artist": "雞蛋蒸肉餅 & WHIZZ",
         "plays": 24,
         "cover_url": "covers/2025-04_Hey Darling Darling Fill My Empty Soul.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=p4QCYmI8LeE"
+        "youtube_url": "https://www.youtube.com/watch?v=p4QCYmI8LeE",
+        "genre": "Indie Pop"
       }
     ]
   },
@@ -193,7 +213,8 @@
         "artist": "Lana Del Rey",
         "plays": 30,
         "cover_url": "covers/2025-05_Chemtrails Over the Country Cl.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=vBHild0PiTE"
+        "youtube_url": "https://www.youtube.com/watch?v=vBHild0PiTE",
+        "genre": "Folk, Country, Americana"
       },
       {
         "rank": 2,
@@ -201,7 +222,8 @@
         "artist": "정우",
         "plays": 29,
         "cover_url": "covers/2025-05_허물.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=NgNSGF0KcpY"
+        "youtube_url": "https://www.youtube.com/watch?v=NgNSGF0KcpY",
+        "genre": "Indie, Folk"
       },
       {
         "rank": 3,
@@ -209,7 +231,8 @@
         "artist": "토이",
         "plays": 26,
         "cover_url": "covers/2025-05_우리.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=Ab4zKX3BL5E"
+        "youtube_url": "https://www.youtube.com/watch?v=Ab4zKX3BL5E",
+        "genre": "K-Pop, Electronica, Ballad"
       },
       {
         "rank": 4,
@@ -217,7 +240,8 @@
         "artist": "SHINee",
         "plays": 26,
         "cover_url": "covers/2025-05_재연.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=ICe23w7nnJA"
+        "youtube_url": "https://www.youtube.com/watch?v=ICe23w7nnJA",
+        "genre": "K-Pop, R&B"
       },
       {
         "rank": 5,
@@ -225,7 +249,8 @@
         "artist": "Lorde",
         "plays": 26,
         "cover_url": "covers/2025-05_Ribs.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=EaUokBzptmw"
+        "youtube_url": "https://www.youtube.com/watch?v=EaUokBzptmw",
+        "genre": "Electropop, Indietronica"
       }
     ]
   },
@@ -239,7 +264,8 @@
         "artist": "창모",
         "plays": 43,
         "cover_url": "covers/2025-06_FWB.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=frvafC_Ry9Y"
+        "youtube_url": "https://www.youtube.com/watch?v=frvafC_Ry9Y",
+        "genre": "Hip-hop, Rap"
       },
       {
         "rank": 2,
@@ -247,7 +273,8 @@
         "artist": "도쿄지헨",
         "plays": 43,
         "cover_url": "covers/2025-06_Gunjou Biyori - Ideal Days For Ultramari.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=jX4FYnsTjus"
+        "youtube_url": "https://www.youtube.com/watch?v=jX4FYnsTjus",
+        "genre": "Alternative Rock, Pop-rock, J-Pop"
       },
       {
         "rank": 3,
@@ -255,7 +282,8 @@
         "artist": "Part Time Musicians",
         "plays": 29,
         "cover_url": "covers/2025-06_The Only One.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=z82jat4RmM8"
+        "youtube_url": "https://www.youtube.com/watch?v=z82jat4RmM8",
+        "genre": "Indie Pop"
       },
       {
         "rank": 4,
@@ -263,7 +291,8 @@
         "artist": "Hump Back",
         "plays": 28,
         "cover_url": "covers/2025-06_Haikei Shounenyo.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=d6i4AtCxrDo"
+        "youtube_url": "https://www.youtube.com/watch?v=d6i4AtCxrDo",
+        "genre": "Rock, J-Rock"
       },
       {
         "rank": 5,
@@ -271,7 +300,8 @@
         "artist": "beabadoobee",
         "plays": 27,
         "cover_url": "covers/2025-06_the way things go.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=4SeE6rJrnfc"
+        "youtube_url": "https://www.youtube.com/watch?v=4SeE6rJrnfc",
+        "genre": "Indie Rock, Alt-pop"
       }
     ]
   },
@@ -285,7 +315,8 @@
         "artist": "이찬혁",
         "plays": 27,
         "cover_url": "covers/2025-07_비비드라라러브.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=bMrwm7TXWAo"
+        "youtube_url": "https://www.youtube.com/watch?v=bMrwm7TXWAo",
+        "genre": "Synth Pop"
       },
       {
         "rank": 2,
@@ -293,7 +324,8 @@
         "artist": "이찬혁",
         "plays": 26,
         "cover_url": "covers/2025-07_Andrew.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=LFAMwRi0TqQ"
+        "youtube_url": "https://www.youtube.com/watch?v=LFAMwRi0TqQ",
+        "genre": "Synth Pop"
       },
       {
         "rank": 3,
@@ -301,7 +333,8 @@
         "artist": "데이식스",
         "plays": 26,
         "cover_url": "covers/2025-07_녹아내려요.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=bShOVeYi_vg"
+        "youtube_url": "https://www.youtube.com/watch?v=bShOVeYi_vg",
+        "genre": "K-Pop, Pop Rock"
       },
       {
         "rank": 4,
@@ -309,7 +342,8 @@
         "artist": "김종서",
         "plays": 25,
         "cover_url": "covers/2025-07_영.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=xRCNfcUFKRw"
+        "youtube_url": "https://www.youtube.com/watch?v=xRCNfcUFKRw",
+        "genre": "Rock Ballad"
       },
       {
         "rank": 5,
@@ -317,7 +351,8 @@
         "artist": "이찬혁",
         "plays": 25,
         "cover_url": "covers/2025-07_멸종위기사랑.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=bLahVNBGdLQ"
+        "youtube_url": "https://www.youtube.com/watch?v=bLahVNBGdLQ",
+        "genre": "Synth Pop"
       }
     ]
   },
@@ -331,7 +366,8 @@
         "artist": "한로로",
         "plays": 34,
         "cover_url": "covers/2025-08_00.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=vR_mmXeLVA0"
+        "youtube_url": "https://www.youtube.com/watch?v=vR_mmXeLVA0",
+        "genre": "Indie Pop, Rock"
       },
       {
         "rank": 2,
@@ -339,7 +375,8 @@
         "artist": "한로로",
         "plays": 29,
         "cover_url": "covers/2025-08_갈림길.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=9hjnGy4aVgo"
+        "youtube_url": "https://www.youtube.com/watch?v=9hjnGy4aVgo",
+        "genre": "Indie Pop"
       },
       {
         "rank": 3,
@@ -347,7 +384,8 @@
         "artist": "한로로",
         "plays": 22,
         "cover_url": "covers/2025-08___에게.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=1GUFm9FrPZI"
+        "youtube_url": "https://www.youtube.com/watch?v=1GUFm9FrPZI",
+        "genre": "Indie Pop"
       },
       {
         "rank": 4,
@@ -355,7 +393,8 @@
         "artist": "f(x)",
         "plays": 18,
         "cover_url": "covers/2025-08_Hot Summer.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=z-rftpZ7kCY"
+        "youtube_url": "https://www.youtube.com/watch?v=z-rftpZ7kCY",
+        "genre": "Electropop, Dance Pop"
       },
       {
         "rank": 5,
@@ -363,7 +402,8 @@
         "artist": "한로로",
         "plays": 15,
         "cover_url": "covers/2025-08_내일에서 온 티켓.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=1GUFm9FrPZI"
+        "youtube_url": "https://www.youtube.com/watch?v=1GUFm9FrPZI",
+        "genre": "Indie Pop"
       }
     ]
   },
@@ -377,7 +417,8 @@
         "artist": "한로로",
         "plays": 4,
         "cover_url": "covers/2025-09_시간을 달리네.jpg",
-        "youtube_url": "https://www.youtube.com/shorts/2QW0sUW-4CA"
+        "youtube_url": "https://www.youtube.com/shorts/2QW0sUW-4CA",
+        "genre": "Indie Pop"
       },
       {
         "rank": 2,
@@ -385,7 +426,8 @@
         "artist": "박정현",
         "plays": 3,
         "cover_url": "covers/2025-09_편지할께요.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=RnIbZd8sj7E"
+        "youtube_url": "https://www.youtube.com/watch?v=RnIbZd8sj7E",
+        "genre": "Ballad"
       },
       {
         "rank": 3,
@@ -393,7 +435,8 @@
         "artist": "ZICO",
         "plays": 3,
         "cover_url": "covers/2025-09_사랑이었다 feat 루나.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=u6M3KnLbPaE"
+        "youtube_url": "https://www.youtube.com/watch?v=u6M3KnLbPaE",
+        "genre": "R&B, Ballad"
       },
       {
         "rank": 4,
@@ -401,7 +444,8 @@
         "artist": "아이유",
         "plays": 3,
         "cover_url": "covers/2025-09_바이 썸머.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=Hsuy_xzPyWQ"
+        "youtube_url": "https://www.youtube.com/watch?v=Hsuy_xzPyWQ",
+        "genre": "Pop, Ballad"
       },
       {
         "rank": 5,
@@ -409,7 +453,8 @@
         "artist": "성시경",
         "plays": 2,
         "cover_url": "covers/2025-09_영원히.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=75mk7jwSjxY"
+        "youtube_url": "https://www.youtube.com/watch?v=75mk7jwSjxY",
+        "genre": "Ballad"
       }
     ]
   },
@@ -423,7 +468,8 @@
         "artist": "NMIXX",
         "plays": 22,
         "cover_url": "covers/2025-10_Blue Valentine.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=EmeW6li6bbo"
+        "youtube_url": "https://www.youtube.com/watch?v=EmeW6li6bbo",
+        "genre": "Pop Rock, Mixx Pop"
       },
       {
         "rank": 2,
@@ -431,7 +477,8 @@
         "artist": "한로로",
         "plays": 18,
         "cover_url": "covers/2025-10_사랑하게 될 거야.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=E06jd-aRPLk"
+        "youtube_url": "https://www.youtube.com/watch?v=E06jd-aRPLk",
+        "genre": "Indie Pop"
       },
       {
         "rank": 3,
@@ -439,7 +486,8 @@
         "artist": "김동률",
         "plays": 14,
         "cover_url": "covers/2025-10_동행.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=B9cb1NGDyI8"
+        "youtube_url": "https://www.youtube.com/watch?v=B9cb1NGDyI8",
+        "genre": "Ballad"
       },
       {
         "rank": 4,
@@ -447,7 +495,8 @@
         "artist": "개구장애",
         "plays": 10,
         "cover_url": "covers/2025-10_엘도라도.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=gqNvsFwgnaE"
+        "youtube_url": "https://www.youtube.com/watch?v=gqNvsFwgnaE",
+        "genre": "Indie Rock"
       },
       {
         "rank": 5,
@@ -455,7 +504,8 @@
         "artist": "MEOVV",
         "plays": 10,
         "cover_url": "covers/2025-10_BURNING UP.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=hlULtigNNao"
+        "youtube_url": "https://www.youtube.com/watch?v=hlULtigNNao",
+        "genre": "Jersey Club, Dance"
       }
     ]
   },
@@ -469,7 +519,8 @@
         "artist": "자우림",
         "plays": 20,
         "cover_url": "covers/2025-11_아테나.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=TZSlzvcEhWs"
+        "youtube_url": "https://www.youtube.com/watch?v=TZSlzvcEhWs",
+        "genre": "Modern Rock, Alternative Rock"
       },
       {
         "rank": 2,
@@ -477,7 +528,8 @@
         "artist": "주혜린",
         "plays": 19,
         "cover_url": "covers/2025-11_미친 건가 Re-Make.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=6bn0dlv7FxY"
+        "youtube_url": "https://www.youtube.com/watch?v=6bn0dlv7FxY",
+        "genre": "Indie Pop"
       },
       {
         "rank": 3,
@@ -485,7 +537,8 @@
         "artist": "Green Day",
         "plays": 18,
         "cover_url": "covers/2025-11_21 Guns.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=r00ikilDxW4"
+        "youtube_url": "https://www.youtube.com/watch?v=r00ikilDxW4",
+        "genre": "Alternative Rock, Punk Rock"
       },
       {
         "rank": 4,
@@ -493,7 +546,8 @@
         "artist": "화사",
         "plays": 18,
         "cover_url": "covers/2025-11_Good Goodbye.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=wQLEkO71PAk"
+        "youtube_url": "https://www.youtube.com/watch?v=wQLEkO71PAk",
+        "genre": "Ballad"
       },
       {
         "rank": 5,
@@ -501,7 +555,8 @@
         "artist": "백예린",
         "plays": 16,
         "cover_url": "covers/2025-11_in the middle.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=XocTyDFwZis"
+        "youtube_url": "https://www.youtube.com/watch?v=XocTyDFwZis",
+        "genre": "R&B, Soul, Indie Pop"
       }
     ]
   },
@@ -515,7 +570,8 @@
         "artist": "백 넘버",
         "plays": 33,
         "cover_url": "covers/2025-12_Heroine.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=CsRgs9GBky8"
+        "youtube_url": "https://www.youtube.com/watch?v=CsRgs9GBky8",
+        "genre": "J-Pop"
       },
       {
         "rank": 2,
@@ -523,7 +579,8 @@
         "artist": "빈지노",
         "plays": 30,
         "cover_url": "covers/2025-12_Gym.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=Y4W1NDHlmw0"
+        "youtube_url": "https://www.youtube.com/watch?v=Y4W1NDHlmw0",
+        "genre": "Hip-hop, Alternative Hip-hop"
       },
       {
         "rank": 3,
@@ -531,7 +588,8 @@
         "artist": "HARVARD",
         "plays": 25,
         "cover_url": "covers/2025-12_Clean  Dirty.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=ygoKkDC-7fY"
+        "youtube_url": "https://www.youtube.com/watch?v=ygoKkDC-7fY",
+        "genre": "Hip-hop, R&B"
       },
       {
         "rank": 4,
@@ -539,7 +597,8 @@
         "artist": "ZICO",
         "plays": 19,
         "cover_url": "covers/2025-12_7H 아니야.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=SVCnivlXrhg"
+        "youtube_url": "https://www.youtube.com/watch?v=SVCnivlXrhg",
+        "genre": "Hip-hop, Rap"
       },
       {
         "rank": 5,
@@ -547,7 +606,8 @@
         "artist": "빈지노",
         "plays": 19,
         "cover_url": "covers/2025-12_Sandman.jpg",
-        "youtube_url": "https://www.youtube.com/watch?v=ojQoCfTRTkw"
+        "youtube_url": "https://www.youtube.com/watch?v=ojQoCfTRTkw",
+        "genre": "Hip-hop, Alternative Hip-hop"
       }
     ]
   }
