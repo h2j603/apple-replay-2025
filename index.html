@@ -18,22 +18,178 @@
       background: #0a0a0a;
       overflow: hidden;
       font-family: 'Noto Sans KR', sans-serif;
+      height: 100%;
     }
     
+    /* 메인 컨테이너: PC에서 좌우 50% 분할 */
+    #main-container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+    
+    /* 지도(왼쪽) 영역 */
+    #map-side {
+      width: 50%;
+      height: 100%;
+      background: #0a0a0a;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* 캔버스 컨테이너 */
     #canvas-container {
+      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      position: relative;
     }
     
     canvas {
       display: block;
     }
     
+    /* 라디오(오른쪽) 영역 */
+    #radio-side {
+      width: 50%;
+      height: 100%;
+      background: #fc4f05;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      transition: background-color 0.3s ease;
+    }
+    
+    /* 라디오 기본 상태 */
+    .radio-default {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .radio-default .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    
+    .radio-default p {
+      font-size: 1rem;
+      font-weight: 300;
+    }
+    
+    /* 라디오 활성 상태 */
+    .radio-content {
+      display: none;
+      text-align: center;
+      color: #fff;
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .radio-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* 앨범 커버 - 그라디언트 맵 필터 */
+    .album-cover-container {
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 30px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    .album-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* 그라디언트 맵 필터 - #babab8 톤 */
+      filter: grayscale(100%) sepia(15%) hue-rotate(90deg) saturate(40%) brightness(0.9);
+      transition: filter 0.3s ease;
+    }
+    
+    .album-cover:hover {
+      filter: grayscale(50%) sepia(10%) hue-rotate(90deg) saturate(60%) brightness(0.95);
+    }
+    
+    /* 곡 정보 */
+    .song-info {
+      margin-bottom: 30px;
+    }
+    
+    .song-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    
+    .song-artist {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 300;
+      margin-bottom: 8px;
+    }
+    
+    .song-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .song-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* YouTube 링크 버튼 */
+    .youtube-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    
+    .youtube-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .youtube-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    /* 헤더 */
     .header {
-      position: fixed;
-      top: 40px;
+      position: absolute;
+      top: 30px;
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
@@ -43,69 +199,27 @@
     
     .header h1 {
       font-family: 'Noto Serif KR', serif;
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: #fff;
       letter-spacing: -0.02em;
       opacity: 0.9;
     }
     
     .header p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: rgba(255,255,255,0.5);
-      margin-top: 8px;
+      margin-top: 6px;
       font-weight: 300;
     }
     
-    .tooltip {
-      position: fixed;
-      background: rgba(20, 20, 20, 0.95);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 16px 20px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-    }
-    
-    .tooltip.visible {
-      opacity: 1;
-    }
-    
-    .tooltip .month {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    
-    .tooltip .title {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 1.1rem;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    
-    .tooltip .artist {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 10px;
-    }
-    
-    .tooltip .plays {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.4);
-    }
-    
+    /* 컨트롤 버튼 */
     .controls {
-      position: fixed;
-      bottom: 40px;
+      position: absolute;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 12px;
+      gap: 10px;
       z-index: 100;
     }
     
@@ -113,10 +227,10 @@
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
       color: rgba(255,255,255,0.8);
-      padding: 10px 20px;
-      border-radius: 24px;
+      padding: 8px 16px;
+      border-radius: 20px;
       font-family: 'Noto Sans KR', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -131,38 +245,152 @@
       border-color: rgba(255,255,255,0.4);
     }
     
+    /* 힌트 */
     .hint {
-      position: fixed;
-      bottom: 100px;
+      position: absolute;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.3);
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.25);
       text-align: center;
+      white-space: nowrap;
+    }
+    
+    /* 툴팁 - 간소화 */
+    .tooltip {
+      position: fixed;
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px 14px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      font-size: 0.8rem;
+      display: none; /* 라디오 사이드에서 정보 표시하므로 숨김 */
+    }
+    
+    .tooltip.visible {
+      opacity: 1;
+    }
+    
+    /* 반응형: 모바일에서는 상하 50% 분할 */
+    @media (max-width: 768px) {
+      #main-container {
+        flex-direction: column;
+      }
+      
+      #map-side {
+        width: 100%;
+        height: 50%;
+      }
+      
+      #radio-side {
+        width: 100%;
+        height: 50%;
+        padding: 20px;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .header p {
+        font-size: 0.75rem;
+      }
+      
+      .album-cover-container {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 20px;
+      }
+      
+      .song-title {
+        font-size: 1.4rem;
+      }
+      
+      .song-artist {
+        font-size: 0.95rem;
+      }
+      
+      .controls {
+        gap: 6px;
+      }
+      
+      .controls button {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+      }
+      
+      .hint {
+        font-size: 0.65rem;
+        bottom: 70px;
+      }
+      
+      .radio-default .icon {
+        font-size: 2.5rem;
+      }
+      
+      .radio-default p {
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>2025</h1>
-    <p>가장 많이 들은 노래</p>
-  </div>
-  
-  <div id="canvas-container"></div>
-  
-  <div class="tooltip" id="tooltip">
-    <div class="month"></div>
-    <div class="title"></div>
-    <div class="artist"></div>
-    <div class="plays"></div>
-  </div>
-  
-  <div class="hint">마우스를 올려 상세 정보 확인 · 클릭 시 YouTube로 이동</div>
-  
-  <div class="controls">
-    <button id="btn-grid" class="active">그리드</button>
-    <button id="btn-spiral">나선형</button>
-    <button id="btn-timeline">타임라인</button>
+  <div id="main-container">
+    <!-- 지도(왼쪽) 영역 -->
+    <section id="map-side">
+      <div class="header">
+        <h1>2025</h1>
+        <p>가장 많이 들은 노래</p>
+      </div>
+      
+      <div id="canvas-container"></div>
+      
+      <div class="hint">마우스를 올려 상세 정보 확인</div>
+      
+      <div class="controls">
+        <button id="btn-grid" class="active">그리드</button>
+        <button id="btn-spiral">나선형</button>
+        <button id="btn-timeline">타임라인</button>
+      </div>
+    </section>
+    
+    <!-- 라디오(오른쪽) 영역 -->
+    <section id="radio-side">
+      <!-- 기본 상태 -->
+      <div class="radio-default" id="radio-default">
+        <div class="icon">♪</div>
+        <p>노래를 선택하세요</p>
+      </div>
+      
+      <!-- 활성 상태 -->
+      <div class="radio-content" id="radio-content">
+        <div class="album-cover-container">
+          <img class="album-cover" id="radio-cover" src="" alt="앨범 커버">
+        </div>
+        
+        <div class="song-info">
+          <h2 class="song-title" id="radio-title">곡 제목</h2>
+          <p class="song-artist" id="radio-artist">가수명</p>
+          <div class="song-meta">
+            <span id="radio-month">월</span>
+            <span id="radio-plays">재생 횟수</span>
+          </div>
+        </div>
+        
+        <a class="youtube-btn" id="radio-youtube" href="#" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+          YouTube에서 듣기
+        </a>
+      </div>
+    </section>
   </div>
 
   <script src="app.js"></script>
